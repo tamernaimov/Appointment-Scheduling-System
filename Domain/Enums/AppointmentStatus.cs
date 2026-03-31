@@ -6,7 +6,12 @@ using System.Threading.Tasks;
 
 namespace Appointment_Scheduling_System.Domain.Enums
 {
-    internal class AppointmentStatus
+    public enum AppointmentStatus
     {
+        Scheduled,
+        Completed,
+        Cancelled,
+        NoShow
     }
 }
+

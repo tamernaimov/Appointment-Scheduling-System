@@ -21,6 +21,6 @@ namespace Appointment_Scheduling_System.Domain.Entities
 
         public DateTime EndTime { get; set; }
 
-        //public AppointmentStatus Status { get; set; }
+        public AppointmentStatus Status { get; set; }
     }
 }
