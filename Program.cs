@@ -6,9 +6,10 @@
         {
             Console.WriteLine("Hello, World!");
 
-            //check
-            //check2
-            
+
+            string name = "Yazko";
+
+
         }
     }
 }
