@@ -6,7 +6,7 @@
         {
             Console.WriteLine("Hello, World!");
             int number = 21;
-
+            string name = "Yazko";
         }
     }
 }
