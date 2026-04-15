@@ -5,10 +5,8 @@
         static void Main(string[] args)
         {
             Console.WriteLine("Hello, World!");
-
-            //check
-            //check2
-            
+            int number = 21;
+            string name = "Yazko";
         }
     }
 }
