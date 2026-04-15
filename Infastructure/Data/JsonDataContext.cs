@@ -10,8 +10,8 @@ namespace Appointment_Scheduling_System.Infrastructure.Data
         public List<Client> Clients { get; set; }
         public List<Appointment> Appointments { get; set; }
 
-        private readonly string clientsFile = "Data/clients.json";
-        private readonly string appointmentsFile = "Data/appointments.json";
+        private readonly string clientsFile = "../../../Data/clients.json";
+        private readonly string appointmentsFile = "../../../Data/appointments.json";
 
         public JsonDataContext(JsonFileService fileService)
         {
