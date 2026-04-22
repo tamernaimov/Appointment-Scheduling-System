@@ -24,12 +24,16 @@ namespace Appointment_Scheduling_System.Infrastructure.Data
 
             Clients = _fileService.Read<Client>(clientsFile);
             Appointments = _fileService.Read<Appointment>(appointmentsFile);
+            Services = _fileService.Read<Service>(servicesFile);
+            Staff = _fileService.Read<Staff>(staffFile);
         }
 
         public void SaveChanges()
         {
             _fileService.Write(clientsFile, Clients);
             _fileService.Write(appointmentsFile, Appointments);
+            _fileService.Write(servicesFile, Services);
+            _fileService.Write(staffFile, Staff);
         }
     }
 }
