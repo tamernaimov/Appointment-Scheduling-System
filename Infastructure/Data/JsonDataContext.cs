@@ -9,10 +9,15 @@ namespace Appointment_Scheduling_System.Infrastructure.Data
 
         public List<Client> Clients { get; set; }
         public List<Appointment> Appointments { get; set; }
+        public List<Service> Services { get; set; }
+        public List<Staff> Staff { get; set; }
 
         private readonly string clientsFile = "../../../Data/clients.json";
         private readonly string appointmentsFile = "../../../Data/appointments.json";
+        private readonly string servicesFile = "../../../Data/services.json";
+        private readonly string staffFile = "../../../Data/staff.json";
 
+       
         public JsonDataContext(JsonFileService fileService)
         {
             _fileService = fileService;
