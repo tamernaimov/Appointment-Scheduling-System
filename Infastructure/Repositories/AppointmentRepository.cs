@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Domain.Entities;
 using Appointment_Scheduling_System.Infrastructure.Data;
 
 namespace Appointment_Scheduling_System.Infrastructure.Repositories
 {
-    public class AppointmentRepository
+    public class AppointmentRepository : IAppointmentRepository
     {
         private readonly JsonDataContext _context;
 

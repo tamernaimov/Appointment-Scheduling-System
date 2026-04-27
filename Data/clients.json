@@ -5,5 +5,19 @@
     "LastName": "Ivanov",
     "PhoneNumber": "0888",
     "Email": "ivan@test.com"
+  },
+  {
+    "Id": 2,
+    "FirstName": "Ivan",
+    "LastName": "Ivanov",
+    "PhoneNumber": "0888",
+    "Email": "ivan@test.com"
+  },
+  {
+    "Id": 3,
+    "FirstName": "Petar",
+    "LastName": "Petrov",
+    "PhoneNumber": "0899",
+    "Email": "petar@test.com"
   }
 ]
