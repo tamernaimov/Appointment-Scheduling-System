@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace Appointment_Scheduling_System.Domain.Entities
 {
-    internal class Staff
+    public class Staff
     {
+        public int Id { get; set; }
+        public string Name { get; set; }
+        public string Position { get; set; }
     }
 }
