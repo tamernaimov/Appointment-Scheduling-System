@@ -18,9 +18,13 @@ namespace Appointment_Scheduling_System
 
             IClientRepository clientRepo = new ClientRepository(context);
             IAppointmentRepository appointmentRepo = new AppointmentRepository(context);
+            IServiceRepository serviceRepo = new ServiceRepository(context);
+            IStaffRepository staffRepo = new StaffRepository(context);
 
             var clientService = new ClientService(clientRepo);
             var appointmentService = new AppointmentService(appointmentRepo);
+            var serviceService = new ServiceManagementService(serviceRepo);
+            var staffService = new StaffService(staffRepo);
 
             // start app
             var menu = new MainMenu(clientService, appointmentService);

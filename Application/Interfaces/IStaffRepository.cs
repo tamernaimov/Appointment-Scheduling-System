@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Interfaces
 {
-    internal class IStaffRepository
+    public interface IStaffRepository
     {
+        void Add(Staff staff);
+
+        List<Staff> GetAll();
+
+        Staff GetById(int id);
     }
 }
