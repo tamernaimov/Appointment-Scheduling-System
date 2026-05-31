@@ -11,6 +11,6 @@ namespace Appointment_Scheduling_System.Domain.Entities
         public int Id { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
-        public int DurationMinutes { get; set; }
+        public int DurationInMinutes { get; set; }
     }
 }
