@@ -1,6 +1,7 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.ConsoleUI.Menus;
+using Appointment_Scheduling_System.Domain.Entities;
 using Appointment_Scheduling_System.Infrastructure.Data;
 using Appointment_Scheduling_System.Infrastructure.Persistence;
 using Appointment_Scheduling_System.Infrastructure.Repositories;
@@ -11,6 +12,7 @@ namespace Appointment_Scheduling_System
     {
         static void Main(string[] args)
         {
+            // setup
             var fileService = new JsonFileService();
             var context = new JsonDataContext(fileService);
 
@@ -24,13 +26,9 @@ namespace Appointment_Scheduling_System
             var serviceService = new ServiceManagementService(serviceRepo);
             var staffService = new StaffService(staffRepo);
 
-            var mainMenu = new MainMenu(
-                clientService,
-                appointmentService,
-                serviceService,
-                staffService);
-
-            mainMenu.Show();
+            // start app
+            var menu = new MainMenu(clientService, appointmentService);
+            menu.Show();
         }
     }
 }
