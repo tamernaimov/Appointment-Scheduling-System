@@ -1,29 +1,44 @@
 ﻿using Appointment_Scheduling_System.Application.Services;
-using static System.Net.Mime.MediaTypeNames;
-
+using Appointment_Scheduling_System.Application.Interfaces;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class MainMenu
     {
         private readonly ClientService _clientService;
+        private readonly IServiceRepository _serviceRepository;
         private readonly AppointmentService _appointmentService;
+        private readonly ReportService _reportService;
+        private readonly StaffService _staffService;
 
-        public MainMenu(ClientService clientService, AppointmentService appointmentService)
+        public MainMenu(
+            ClientService clientService,
+            IServiceRepository serviceRepository,
+            AppointmentService appointmentService,
+            ReportService reportService,
+            StaffService staffService)
         {
             _clientService = clientService;
+            _serviceRepository = serviceRepository;
             _appointmentService = appointmentService;
+            _reportService = reportService;
+            _staffService = staffService;
         }
-
         public void Show()
         {
             while (true)
             {
-                Console.WriteLine("\n=== MAIN MENU ===");
+                Console.Clear();
+
+                Console.WriteLine("=== SYSTEM MENU ===");
                 Console.WriteLine("1. Clients");
-                Console.WriteLine("2. Appointments");
+                Console.WriteLine("2. Services");
+                Console.WriteLine("3. Staff");
+                Console.WriteLine("4. Appointments");
+                Console.WriteLine("5. Reports");
                 Console.WriteLine("0. Exit");
 
+                Console.Write("Choose: ");
                 var choice = Console.ReadLine();
 
                 switch (choice)
@@ -33,11 +48,27 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                         break;
 
                     case "2":
+                        new ServiceMenu(_serviceRepository).Show();
+                        break;
+                    case "3":
+                        new StaffMenu(_staffService).Show();
+                        break;
+
+                    case "4":
                         new AppointmentMenu(_appointmentService).Show();
+                        break;
+
+                    case "5":
+                        new ReportMenu(_reportService).Show();
                         break;
 
                     case "0":
                         return;
+
+                    default:
+                        Console.WriteLine("Invalid option");
+                        Console.ReadKey();
+                        break;
                 }
             }
         }

@@ -1,24 +1,24 @@
 [
   {
     "Id": 1,
-    "FirstName": "Ivan",
-    "LastName": "Ivanov",
-    "PhoneNumber": "0888",
-    "Email": "ivan@test.com"
+    "FirstName": "Updated",
+    "LastName": "Updated",
+    "PhoneNumber": "000",
+    "Email": "updated@mail.com"
   },
   {
     "Id": 2,
-    "FirstName": "Ivan",
-    "LastName": "Ivanov",
-    "PhoneNumber": "0888",
-    "Email": "ivan@test.com"
+    "FirstName": "Updated",
+    "LastName": "Updated",
+    "PhoneNumber": "000",
+    "Email": "updated@mail.com"
   },
   {
     "Id": 3,
-    "FirstName": "Petar",
-    "LastName": "Petrov",
-    "PhoneNumber": "0899",
-    "Email": "petar@test.com"
+    "FirstName": "Updated",
+    "LastName": "Updated",
+    "PhoneNumber": "000",
+    "Email": "updated@mail.com"
   },
   {
     "Id": 4,
@@ -40,5 +40,19 @@
     "LastName": "Yahov",
     "PhoneNumber": "0886767676",
     "Email": "spaskata01@gmail.com"
+  },
+  {
+    "Id": 7,
+    "FirstName": "Updated",
+    "LastName": "Updated",
+    "PhoneNumber": "000",
+    "Email": "updated@mail.com"
+  },
+  {
+    "Id": 8,
+    "FirstName": "Plamen",
+    "LastName": "Petrov",
+    "PhoneNumber": "08989797",
+    "Email": "plamen@gmaig,s"
   }
 ]

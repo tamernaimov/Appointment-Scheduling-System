@@ -4,5 +4,11 @@
     "Name": "dasd",
     "Price": 22,
     "DurationInMinutes": 12
+  },
+  {
+    "Id": 2,
+    "Name": "Yazkan",
+    "Price": 1000,
+    "DurationInMinutes": 30
   }
 ]

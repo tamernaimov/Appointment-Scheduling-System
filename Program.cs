@@ -1,7 +1,6 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.ConsoleUI.Menus;
-using Appointment_Scheduling_System.Domain.Entities;
 using Appointment_Scheduling_System.Infrastructure.Data;
 using Appointment_Scheduling_System.Infrastructure.Persistence;
 using Appointment_Scheduling_System.Infrastructure.Repositories;
@@ -12,23 +11,32 @@ namespace Appointment_Scheduling_System
     {
         static void Main(string[] args)
         {
-            // setup
             var fileService = new JsonFileService();
             var context = new JsonDataContext(fileService);
 
+            // Repositories
             IClientRepository clientRepo = new ClientRepository(context);
             IAppointmentRepository appointmentRepo = new AppointmentRepository(context);
             IServiceRepository serviceRepo = new ServiceRepository(context);
+            IScheduleRepository scheduleRepo = new ScheduleRepository(context);
             IStaffRepository staffRepo = new StaffRepository(context);
-
-            var clientService = new ClientService(clientRepo);
-            var appointmentService = new AppointmentService(appointmentRepo);
-            var serviceService = new ServiceManagementService(serviceRepo);
             var staffService = new StaffService(staffRepo);
 
-            // start app
-            var menu = new MainMenu(clientService, appointmentService);
-            menu.Show();
+            // Services
+            var clientService = new ClientService(clientRepo);
+            var appointmentService = new AppointmentService(appointmentRepo, scheduleRepo);
+            var reportService = new ReportService(appointmentRepo, serviceRepo);
+
+            // UI
+            var mainMenu = new MainMenu(
+              clientService,
+              serviceRepo,
+              appointmentService,
+              reportService,
+              staffService
+            );
+
+            mainMenu.Show();
         }
     }
 }

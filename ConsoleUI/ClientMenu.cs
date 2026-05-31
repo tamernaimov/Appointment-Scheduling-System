@@ -1,4 +1,5 @@
 ﻿using Appointment_Scheduling_System.Application.Services;
+using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -13,37 +14,77 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
         public void Show()
         {
-            Console.WriteLine("\n--- Clients ---");
-            Console.WriteLine("1. Add client");
-            Console.WriteLine("2. List clients");
-
-            var choice = Console.ReadLine();
-
-            if (choice == "1")
+            while (true)
             {
-                Console.Write("First name: ");
-                var firstName = Console.ReadLine();
+                Console.Clear();
 
-                Console.Write("Last name: ");
-                var lastName = Console.ReadLine();
+                Console.WriteLine("=== CLIENTS ===");
+                Console.WriteLine("1. Add");
+                Console.WriteLine("2. Edit");
+                Console.WriteLine("3. List");
+                Console.WriteLine("0. Back");
 
-                Console.Write("Phone: ");
-                var phone = Console.ReadLine();
+                var choice = Console.ReadLine();
 
-                Console.Write("Email: ");
-                var email = Console.ReadLine();
-
-                _clientService.CreateClient(firstName, lastName, phone, email);
-            }
-            else if (choice == "2")
-            {
-                var clients = _clientService.GetAllClients();
-
-                foreach (var c in clients)
+                switch (choice)
                 {
-                    Console.WriteLine($"{c.Id}: {c.FirstName} {c.LastName}");
+                    case "1":
+                        Add();
+                        break;
+
+                    case "2":
+                        Edit();
+                        break;
+
+                    case "3":
+                        List();
+                        break;
+
+                    case "0":
+                        return;
                 }
             }
+        }
+        void Add()
+        {
+            Console.Write("First name: ");
+            var fn = Console.ReadLine();
+
+            Console.Write("Last name: ");
+            var ln = Console.ReadLine();
+
+            Console.Write("Phone: ");
+            var ph = Console.ReadLine();
+
+            Console.Write("Email: ");
+            var em = Console.ReadLine();
+
+            _clientService.CreateClient(fn, ln, ph, em);
+        }
+
+        void Edit()
+        {
+            Console.Write("Id: ");
+            int id = int.Parse(Console.ReadLine());
+
+            _clientService.UpdateClient(new Client
+            {
+                Id = id,
+                FirstName = "Updated",
+                LastName = "Updated",
+                PhoneNumber = "000",
+                Email = "updated@mail.com"
+            });
+        }
+
+        void List()
+        {
+            foreach (var c in _clientService.GetAllClients())
+            {
+                Console.WriteLine($"{c.Id} {c.FirstName} {c.LastName}");
+            }
+
+            Console.ReadKey();
         }
     }
 }

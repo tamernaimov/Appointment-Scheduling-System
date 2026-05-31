@@ -1,14 +1,15 @@
-﻿using Appointment_Scheduling_System.Application.Services;
+﻿using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ServiceMenu
     {
-        private readonly ServiceManagementService _serviceService;
+        private readonly IServiceRepository _serviceRepository;
 
-        public ServiceMenu(ServiceManagementService serviceService)
+        public ServiceMenu(IServiceRepository serviceRepository)
         {
-            _serviceService = serviceService;
+            _serviceRepository = serviceRepository;
         }
 
         public void Show()
@@ -17,7 +18,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== Services ===");
+                Console.WriteLine("=== SERVICES ===");
                 Console.WriteLine("1. Add Service");
                 Console.WriteLine("2. List Services");
                 Console.WriteLine("0. Back");
@@ -48,23 +49,26 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("Price: ");
             decimal price = decimal.Parse(Console.ReadLine());
 
-            Console.Write("Duration (minutes): ");
+            Console.Write("Duration (min): ");
             int duration = int.Parse(Console.ReadLine());
 
-            _serviceService.AddService(name, duration, price);
+            _serviceRepository.Add(new Service
+            {
+                Name = name,
+                Price = price,
+                DurationInMinutes = duration
+            });
 
             Console.WriteLine("Service added.");
             Console.ReadKey();
         }
-
         private void ListServices()
         {
-            var services = _serviceService.GetAllServices();
+            var services = _serviceRepository.GetAll();
 
-            foreach (var service in services)
+            foreach (var s in services)
             {
-                Console.WriteLine(
-                    $"{service.Id} | {service.Name} | {service.Price} lv | {service.DurationInMinutes} min");
+                Console.WriteLine($"{s.Id} | {s.Name} | {s.Price} | {s.DurationInMinutes} min");
             }
 
             Console.ReadKey();
