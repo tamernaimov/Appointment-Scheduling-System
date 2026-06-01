@@ -1,14 +1,14 @@
 [
   {
     "Id": 1,
-    "Name": "dasd",
-    "Price": 22,
-    "DurationInMinutes": 12
+    "Name": "hairdresser",
+    "Price": 200,
+    "DurationInMinutes": 20
   },
   {
     "Id": 2,
-    "Name": "Yazkan",
-    "Price": 1000,
-    "DurationInMinutes": 30
+    "Name": "plamen",
+    "Price": 9292,
+    "DurationInMinutes": 22
   }
 ]

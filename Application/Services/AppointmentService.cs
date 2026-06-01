@@ -24,7 +24,7 @@ namespace Appointment_Scheduling_System.Application.Services
                 .FirstOrDefault(s =>
                     s.StaffId == appointment.StaffId &&
                     s.DayOfWeek == appointment.StartTime.DayOfWeek);
-
+            
             if (schedule == null)
             {
                 throw new Exception("Staff is not working on this day.");

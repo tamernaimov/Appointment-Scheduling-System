@@ -1,20 +1,11 @@
 [
   {
     "Id": 1,
-    "ClientId": 1,
+    "ClientId": 2,
     "StaffId": 1,
     "ServiceId": 1,
-    "StartTime": "2026-04-27T23:26:21.4943648+03:00",
-    "EndTime": "2026-04-28T00:26:21.5186676+03:00",
-    "Status": 3
-  },
-  {
-    "Id": 2,
-    "ClientId": 1,
-    "StaffId": 2,
-    "ServiceId": 3,
-    "StartTime": "2026-04-27T22:45:00",
-    "EndTime": "2026-04-27T23:45:00",
+    "StartTime": "2026-01-02T12:00:00",
+    "EndTime": "2026-01-02T12:30:00",
     "Status": 0
   }
 ]

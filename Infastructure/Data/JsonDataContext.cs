@@ -6,7 +6,6 @@ namespace Appointment_Scheduling_System.Infrastructure.Data
     public class JsonDataContext
     {
         private readonly JsonFileService _fileService;
-
         public List<Client> Clients { get; set; }
         public List<Appointment> Appointments { get; set; }
         public List<Service> Services { get; set; }

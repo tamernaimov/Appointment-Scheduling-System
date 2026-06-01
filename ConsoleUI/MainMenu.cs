@@ -1,5 +1,6 @@
 ﻿using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.Infrastructure.Repositories;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -10,19 +11,19 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private readonly AppointmentService _appointmentService;
         private readonly ReportService _reportService;
         private readonly StaffService _staffService;
-
+        private readonly IScheduleRepository _scheduleRepository;
         public MainMenu(
             ClientService clientService,
             IServiceRepository serviceRepository,
             AppointmentService appointmentService,
             ReportService reportService,
-            StaffService staffService)
+            IScheduleRepository scheduleRepository)
         {
             _clientService = clientService;
             _serviceRepository = serviceRepository;
             _appointmentService = appointmentService;
             _reportService = reportService;
-            _staffService = staffService;
+            _scheduleRepository = scheduleRepository;
         }
         public void Show()
         {
@@ -62,6 +63,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                         new ReportMenu(_reportService).Show();
                         break;
 
+                    case "6":
+                        new ScheduleMenu(_scheduleRepository).Show();
+                        break;
                     case "0":
                         return;
 
