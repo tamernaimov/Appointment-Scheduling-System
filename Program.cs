@@ -1,43 +1,31 @@
-﻿using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Application.Services;
-using Appointment_Scheduling_System.ConsoleUI.Menus;
-using Appointment_Scheduling_System.Infrastructure.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Appointment_Scheduling_System.Infrastructure.Persistence;
 using Appointment_Scheduling_System.Infrastructure.Repositories;
+using Appointment_Scheduling_System.Application.Services;
+using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.ConsoleUI.Menus;
 
-namespace Appointment_Scheduling_System
-{
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            var fileService = new JsonFileService();
-            var context = new JsonDataContext(fileService);
+var services = new ServiceCollection();
 
-            // Repositories
-            IClientRepository clientRepo = new ClientRepository(context);
-            IAppointmentRepository appointmentRepo = new AppointmentRepository(context);
-            IServiceRepository serviceRepo = new ServiceRepository(context);
-            IScheduleRepository scheduleRepo = new ScheduleRepository(context);
-            IStaffRepository staffRepo = new StaffRepository(context);
-            var staffService = new StaffService(staffRepo);
+var connectionString =
+    "Server=.\\SQLEXPRESS;Database=AppointmentDb;Integrated Security=True;TrustServerCertificate=True;";
 
-            // Services
-            var clientService = new ClientService(clientRepo);
-            var appointmentService = new AppointmentService(appointmentRepo, scheduleRepo);
-            var reportService = new ReportService(appointmentRepo, serviceRepo);
 
-            // UI
-            var mainMenu = new MainMenu(
-              clientService,
-              serviceRepo,
-              appointmentService,
-              reportService,
-              staffService,
-              scheduleRepo
-            );
+services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
 
-            mainMenu.Show();
-        }
-    }
-}
+services.AddScoped<IClientRepository, ClientRepository>();
+services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+services.AddScoped<IServiceRepository, ServiceRepository>();
+
+services.AddScoped<ClientService>();
+services.AddScoped<AppointmentService>();
+services.AddScoped<ReportService>();
+
+services.AddScoped<MainMenu>();
+
+var provider = services.BuildServiceProvider();
+
+var menu = provider.GetRequiredService<MainMenu>();
+menu.Show();
