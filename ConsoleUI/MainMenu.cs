@@ -17,12 +17,14 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             IServiceRepository serviceRepository,
             AppointmentService appointmentService,
             ReportService reportService,
+            StaffService staffService,
             IScheduleRepository scheduleRepository)
         {
             _clientService = clientService;
             _serviceRepository = serviceRepository;
             _appointmentService = appointmentService;
             _reportService = reportService;
+            _staffService = staffService;
             _scheduleRepository = scheduleRepository;
         }
         public void Show()
@@ -31,15 +33,30 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== SYSTEM MENU ===");
-                Console.WriteLine("1. Clients");
-                Console.WriteLine("2. Services");
-                Console.WriteLine("3. Staff");
-                Console.WriteLine("4. Appointments");
-                Console.WriteLine("5. Reports");
-                Console.WriteLine("0. Exit");
+                Console.ForegroundColor = ConsoleColor.Cyan;
 
-                Console.Write("Choose: ");
+                Console.WriteLine("==================================================");
+                Console.WriteLine("         APPOINTMENT SCHEDULING SYSTEM");
+                Console.WriteLine("==================================================");
+
+                Console.ResetColor();
+
+                Console.WriteLine();
+                Console.WriteLine("MAIN MENU");
+                Console.WriteLine("--------------------------------------------------");
+
+                Console.WriteLine("[1] Clients");
+                Console.WriteLine("[2] Services");
+                Console.WriteLine("[3] Staff");
+                Console.WriteLine("[4] Appointments");
+                Console.WriteLine("[5] Reports");
+                Console.WriteLine("[6] Schedule");
+
+                Console.WriteLine();
+                Console.WriteLine("[0] Exit");
+
+                Console.WriteLine();
+                Console.Write("Choose option: ");
                 var choice = Console.ReadLine();
 
                 switch (choice)
@@ -56,7 +73,12 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                         break;
 
                     case "4":
-                        new AppointmentMenu(_appointmentService).Show();
+                        new AppointmentMenu(
+                        _appointmentService,
+                        _clientService,
+                        _staffService,
+                        _serviceRepository)
+                    .Show();
                         break;
 
                     case "5":

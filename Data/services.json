@@ -10,5 +10,47 @@
     "Name": "plamen",
     "Price": 9292,
     "DurationInMinutes": 22
+  },
+  {
+    "Id": 3,
+    "Name": "plamen prikazkata bate",
+    "Price": 2090,
+    "DurationInMinutes": 2
+  },
+  {
+    "Id": 4,
+    "Name": "dsmafaklflkdsam",
+    "Price": 2,
+    "DurationInMinutes": 3
+  },
+  {
+    "Id": 5,
+    "Name": "test",
+    "Price": 22,
+    "DurationInMinutes": 3
+  },
+  {
+    "Id": 6,
+    "Name": "test",
+    "Price": 44,
+    "DurationInMinutes": 1
+  },
+  {
+    "Id": 7,
+    "Name": "2",
+    "Price": 1,
+    "DurationInMinutes": 2
+  },
+  {
+    "Id": 8,
+    "Name": "1",
+    "Price": 1,
+    "DurationInMinutes": 1
+  },
+  {
+    "Id": 9,
+    "Name": "4",
+    "Price": 4,
+    "DurationInMinutes": 4
   }
 ]

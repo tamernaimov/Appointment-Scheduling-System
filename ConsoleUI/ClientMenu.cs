@@ -18,11 +18,25 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== CLIENTS ===");
-                Console.WriteLine("1. Add");
-                Console.WriteLine("2. Edit");
-                Console.WriteLine("3. List");
-                Console.WriteLine("0. Back");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+
+                Console.WriteLine("==================================================");
+                Console.WriteLine("                    CLIENTS");
+                Console.WriteLine("==================================================");
+
+                Console.ResetColor();
+
+                Console.WriteLine();
+
+                Console.WriteLine("[1] Add Client");
+                Console.WriteLine("[2] Edit Client");
+                Console.WriteLine("[3] List Clients");
+
+                Console.WriteLine();
+                Console.WriteLine("[0] Back");
+
+                Console.WriteLine();
+                Console.Write("Choose option: ");
 
                 var choice = Console.ReadLine();
 

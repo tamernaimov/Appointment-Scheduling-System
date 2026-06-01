@@ -81,5 +81,49 @@ namespace Appointment_Scheduling_System.Application.Services
                 NoShow = all.Count(a => a.Status == AppointmentStatus.NoShow)
             };
         }
+        public int GetStaffWorkload(
+        int staffId,
+        DateTime start,
+        DateTime end)
+        {
+            return _appointmentRepository.GetAll()
+                .Count(a =>
+                    a.StaffId == staffId &&
+                    a.StartTime >= start &&
+                    a.StartTime <= end);
+        }
+        public List<(int ServiceId, int Count)> GetMostBookedServices()
+        {
+            return _appointmentRepository.GetAll()
+                .GroupBy(a => a.ServiceId)
+                .Select(g => (g.Key, g.Count()))
+                .OrderByDescending(x => x.Item2)
+                .ToList();
+        }
+        public List<Appointment> GetDailySchedule(
+    int staffId,
+    DateTime date)
+        {
+            return _appointmentRepository.GetAll()
+                .Where(a =>
+                    a.StaffId == staffId &&
+                    a.StartTime.Date == date.Date)
+                .OrderBy(a => a.StartTime)
+                .ToList();
+        }
+        public List<Appointment> GetWeeklySchedule(
+    int serviceId,
+    DateTime weekStart)
+        {
+            DateTime weekEnd = weekStart.AddDays(7);
+
+            return _appointmentRepository.GetAll()
+                .Where(a =>
+                    a.ServiceId == serviceId &&
+                    a.StartTime >= weekStart &&
+                    a.StartTime < weekEnd)
+                .OrderBy(a => a.StartTime)
+                .ToList();
+        }
     }
 }

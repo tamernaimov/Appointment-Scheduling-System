@@ -6,6 +6,15 @@
     "ServiceId": 1,
     "StartTime": "2026-01-02T12:00:00",
     "EndTime": "2026-01-02T12:30:00",
-    "Status": 0
+    "Status": 1
+  },
+  {
+    "Id": 2,
+    "ClientId": 1,
+    "StaffId": 1,
+    "ServiceId": 1,
+    "StartTime": "2026-06-02T12:00:00",
+    "EndTime": "2026-06-02T12:30:00",
+    "Status": 3
   }
 ]

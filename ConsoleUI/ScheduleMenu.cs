@@ -18,10 +18,24 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== SCHEDULE MENU ===");
-                Console.WriteLine("1. Add Working Hours");
-                Console.WriteLine("2. List Schedule");
-                Console.WriteLine("0. Back");
+                Console.ForegroundColor = ConsoleColor.DarkYellow;
+
+                Console.WriteLine("==================================================");
+                Console.WriteLine("                   SCHEDULE");
+                Console.WriteLine("==================================================");
+
+                Console.ResetColor();
+
+                Console.WriteLine();
+
+                Console.WriteLine("[1] Add Working Days");
+                Console.WriteLine("[2] View Schedule");
+
+                Console.WriteLine();
+                Console.WriteLine("[0] Back");
+
+                Console.WriteLine();
+                Console.Write("Choose option: ");
 
                 var choice = Console.ReadLine();
 
@@ -85,7 +99,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             }
 
             Console.WriteLine();
-            Console.WriteLine("Working days added successfully.");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("✓ Client added successfully.");
+            Console.ResetColor();
             Console.ReadKey();
         }
 

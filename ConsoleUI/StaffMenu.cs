@@ -17,10 +17,24 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== Staff ===");
-                Console.WriteLine("1. Add Staff");
-                Console.WriteLine("2. List Staff");
-                Console.WriteLine("0. Back");
+                Console.ForegroundColor = ConsoleColor.Blue;
+
+                Console.WriteLine("==================================================");
+                Console.WriteLine("                     STAFF");
+                Console.WriteLine("==================================================");
+
+                Console.ResetColor();
+
+                Console.WriteLine();
+
+                Console.WriteLine("[1] Add Staff");
+                Console.WriteLine("[2] List Staff");
+
+                Console.WriteLine();
+                Console.WriteLine("[0] Back");
+
+                Console.WriteLine();
+                Console.Write("Choose option: ");
 
                 var choice = Console.ReadLine();
 
@@ -50,7 +64,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
             _staffService.AddStaff(name, position);
 
-            Console.WriteLine("Staff member added.");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("✓ Staff Member added successfully.");
+            Console.ResetColor();
             Console.ReadKey();
         }
 

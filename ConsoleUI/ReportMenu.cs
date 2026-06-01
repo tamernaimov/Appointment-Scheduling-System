@@ -17,40 +17,63 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== REPORT MENU ===");
-                Console.WriteLine("1. Appointments by date");
-                Console.WriteLine("2. Appointments by status");
-                Console.WriteLine("3. Client history");
-                Console.WriteLine("4. Revenue report");
-                Console.WriteLine("5. Stats (Cancelled / NoShow)");
-                Console.WriteLine("0. Back");
+                Console.ForegroundColor = ConsoleColor.DarkCyan;
 
+                Console.WriteLine("==================================================");
+                Console.WriteLine("                    REPORTS");
+                Console.WriteLine("==================================================");
+
+                Console.ResetColor();
+
+                Console.WriteLine();
+
+                Console.WriteLine("[1] Daily Schedule");
+                Console.WriteLine("[2] Weekly Schedule");
+                Console.WriteLine("[3] Appointments By Status");
+                Console.WriteLine("[4] Client History");
+                Console.WriteLine("[5] Staff Workload");
+                Console.WriteLine("[6] Most Booked Services");
+                Console.WriteLine("[7] Revenue Report");
+                Console.WriteLine("[8] Cancelled / NoShow Stats");
+
+                Console.WriteLine();
+                Console.WriteLine("[0] Back");
+
+                Console.WriteLine();
+                Console.Write("Choose option: ");
                 var choice = Console.ReadLine();
+                switch (choice) { 
+                case "1":
+                    DailySchedule();
+                    break;
 
-                switch (choice)
-                {
-                    case "1":
-                        ByDate();
-                        break;
+                case "2":
+                    WeeklySchedule();
+                    break;
 
-                    case "2":
-                        ByStatus();
-                        break;
+                case "3":
+                    ByStatus();
+                    break;
 
-                    case "3":
-                        ClientHistory();
-                        break;
+                case "4":
+                    ClientHistory();
+                    break;
 
-                    case "4":
-                        Revenue();
-                        break;
+                case "5":
+                    StaffWorkload();
+                    break;
 
-                    case "5":
-                        Stats();
-                        break;
+                case "6":
+                    MostBookedServices();
+                    break;
 
-                    case "0":
-                        return;
+                case "7":
+                    Revenue();
+                    break;
+
+                case "8":
+                    Stats();
+                    break;
                 }
             }
         }
@@ -103,6 +126,79 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             var revenue = _reportService.GetRevenue(start, end);
 
             Console.WriteLine($"Revenue: {revenue}");
+
+            Console.ReadKey();
+        }
+        private void DailySchedule()
+        {
+            Console.Write("Staff Id: ");
+            int staffId = int.Parse(Console.ReadLine());
+
+            Console.Write("Date: ");
+            DateTime date = DateTime.Parse(Console.ReadLine());
+
+            var appointments =
+                _reportService.GetDailySchedule(staffId, date);
+
+            foreach (var a in appointments)
+            {
+                Console.WriteLine(
+                    $"{a.StartTime} - {a.EndTime}");
+            }
+
+            Console.ReadKey();
+        }
+        private void WeeklySchedule()
+        {
+            Console.Write("Service Id: ");
+            int serviceId = int.Parse(Console.ReadLine());
+
+            Console.Write("Week Start Date: ");
+            DateTime start = DateTime.Parse(Console.ReadLine());
+
+            var appointments =
+                _reportService.GetWeeklySchedule(serviceId, start);
+
+            foreach (var a in appointments)
+            {
+                Console.WriteLine(
+                    $"{a.StartTime} | Staff {a.StaffId}");
+            }
+
+            Console.ReadKey();
+        }
+        private void StaffWorkload()
+        {
+            Console.Write("Staff Id: ");
+            int staffId = int.Parse(Console.ReadLine());
+
+            Console.Write("Start Date: ");
+            DateTime start = DateTime.Parse(Console.ReadLine());
+
+            Console.Write("End Date: ");
+            DateTime end = DateTime.Parse(Console.ReadLine());
+
+            int count =
+                _reportService.GetStaffWorkload(
+                    staffId,
+                    start,
+                    end);
+
+            Console.WriteLine(
+                $"Appointments: {count}");
+
+            Console.ReadKey();
+        }
+        private void MostBookedServices()
+        {
+            var services =
+                _reportService.GetMostBookedServices();
+
+            foreach (var service in services)
+            {
+                Console.WriteLine(
+                    $"Service {service.ServiceId} -> {service.Count}");
+            }
 
             Console.ReadKey();
         }

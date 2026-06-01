@@ -21,8 +21,23 @@ namespace Appointment_Scheduling_System.Infrastructure.Repositories
 
         public void Add(Schedule schedule)
         {
+            var existing = _context.Schedules.FirstOrDefault(s =>
+                s.StaffId == schedule.StaffId &&
+                s.DayOfWeek == schedule.DayOfWeek);
+
+            if (existing != null)
+            {
+                existing.StartTime = schedule.StartTime;
+                existing.EndTime = schedule.EndTime;
+
+                _context.SaveChanges();
+                return;
+            }
+
             schedule.Id = _context.Schedules.Count + 1;
+
             _context.Schedules.Add(schedule);
+
             _context.SaveChanges();
         }
     }

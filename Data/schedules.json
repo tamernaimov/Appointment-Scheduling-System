@@ -1,1 +1,93 @@
-[]
+[
+  {
+    "Id": 1,
+    "StaffId": 3,
+    "DayOfWeek": 1,
+    "StartTime": "11:00:00",
+    "EndTime": "19:00:00"
+  },
+  {
+    "Id": 2,
+    "StaffId": 3,
+    "DayOfWeek": 2,
+    "StartTime": "11:00:00",
+    "EndTime": "19:00:00"
+  },
+  {
+    "Id": 3,
+    "StaffId": 3,
+    "DayOfWeek": 3,
+    "StartTime": "11:00:00",
+    "EndTime": "19:00:00"
+  },
+  {
+    "Id": 4,
+    "StaffId": 3,
+    "DayOfWeek": 4,
+    "StartTime": "11:00:00",
+    "EndTime": "19:00:00"
+  },
+  {
+    "Id": 5,
+    "StaffId": 3,
+    "DayOfWeek": 5,
+    "StartTime": "11:00:00",
+    "EndTime": "19:00:00"
+  },
+  {
+    "Id": 6,
+    "StaffId": 2,
+    "DayOfWeek": 2,
+    "StartTime": "11:00:00",
+    "EndTime": "12:00:00"
+  },
+  {
+    "Id": 7,
+    "StaffId": 1,
+    "DayOfWeek": 1,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  },
+  {
+    "Id": 8,
+    "StaffId": 1,
+    "DayOfWeek": 2,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  },
+  {
+    "Id": 9,
+    "StaffId": 1,
+    "DayOfWeek": 3,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  },
+  {
+    "Id": 10,
+    "StaffId": 1,
+    "DayOfWeek": 4,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  },
+  {
+    "Id": 11,
+    "StaffId": 1,
+    "DayOfWeek": 5,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  },
+  {
+    "Id": 12,
+    "StaffId": 1,
+    "DayOfWeek": 6,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  },
+  {
+    "Id": 13,
+    "StaffId": 1,
+    "DayOfWeek": 0,
+    "StartTime": "01:00:00",
+    "EndTime": "23:59:00"
+  }
+]

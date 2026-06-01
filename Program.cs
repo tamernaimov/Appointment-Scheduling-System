@@ -33,7 +33,8 @@ namespace Appointment_Scheduling_System
               serviceRepo,
               appointmentService,
               reportService,
-              staffService
+              staffService,
+              scheduleRepo
             );
 
             mainMenu.Show();

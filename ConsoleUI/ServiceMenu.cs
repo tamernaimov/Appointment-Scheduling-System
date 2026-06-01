@@ -18,10 +18,24 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             {
                 Console.Clear();
 
-                Console.WriteLine("=== SERVICES ===");
-                Console.WriteLine("1. Add Service");
-                Console.WriteLine("2. List Services");
-                Console.WriteLine("0. Back");
+                Console.ForegroundColor = ConsoleColor.Magenta;
+
+                Console.WriteLine("==================================================");
+                Console.WriteLine("                   SERVICES");
+                Console.WriteLine("==================================================");
+
+                Console.ResetColor();
+
+                Console.WriteLine();
+
+                Console.WriteLine("[1] Add Service");
+                Console.WriteLine("[2] List Services");
+
+                Console.WriteLine();
+                Console.WriteLine("[0] Back");
+
+                Console.WriteLine();
+                Console.Write("Choose option: ");
 
                 var choice = Console.ReadLine();
 
@@ -59,7 +73,21 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 DurationInMinutes = duration
             });
 
-            Console.WriteLine("Service added.");
+
+
+            Console.ForegroundColor = ConsoleColor.Green;
+
+            string message = "Service added successfully!";
+
+            foreach (char c in message)
+            {
+                Console.Write(c);
+                Thread.Sleep(30);
+            }
+
+            Console.ResetColor();
+
+            Console.WriteLine();
             Console.ReadKey();
         }
         private void ListServices()
