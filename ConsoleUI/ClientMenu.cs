@@ -30,7 +30,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
                 Console.WriteLine("[1] Add Client");
                 Console.WriteLine("[2] Edit Client");
-                Console.WriteLine("[3] List Clients");
+                Console.WriteLine("[3] aQdmask dkma"); //list clients
 
                 Console.WriteLine();
                 Console.WriteLine("[0] Back");
