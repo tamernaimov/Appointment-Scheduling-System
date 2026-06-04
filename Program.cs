@@ -6,6 +6,7 @@ using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.ConsoleUI.Menus;
 
+
 var services = new ServiceCollection();
 
 var connectionString =
@@ -23,9 +24,24 @@ services.AddScoped<ClientService>();
 services.AddScoped<AppointmentService>();
 services.AddScoped<ReportService>();
 
+services.AddScoped<IStaffRepository, StaffRepository>();
+services.AddScoped<IScheduleRepository, ScheduleRepository>();
+
+services.AddScoped<ClientService>();
+services.AddScoped<AppointmentService>();
+services.AddScoped<ReportService>();
+services.AddScoped<StaffService>();
+
 services.AddScoped<MainMenu>();
 
 var provider = services.BuildServiceProvider();
+using (var scope = provider.CreateScope())
+{
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
+
+    DbSeeder.Seed(context);
+}
 
 var menu = provider.GetRequiredService<MainMenu>();
 menu.Show();
