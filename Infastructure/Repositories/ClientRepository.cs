@@ -1,45 +1,38 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Domain.Entities;
-using Appointment_Scheduling_System.Infrastructure.Data;
+using Appointment_Scheduling_System.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace Appointment_Scheduling_System.Infrastructure.Repositories
 {
     public class ClientRepository : IClientRepository
     {
-        private readonly JsonDataContext _context;
+        private readonly AppDbContext _context;
 
-        public ClientRepository(JsonDataContext context)
+        public ClientRepository(AppDbContext context)
         {
             _context = context;
         }
 
         public void Add(Client client)
         {
-            client.Id = _context.Clients.Count + 1;
             _context.Clients.Add(client);
             _context.SaveChanges();
         }
 
         public List<Client> GetAll()
         {
-            return _context.Clients;
+            return _context.Clients.ToList();
         }
 
         public Client GetById(int id)
         {
-            return _context.Clients.FirstOrDefault(c => c.Id == id);
+            return _context.Clients.FirstOrDefault(x => x.Id == id);
         }
 
         public void Update(Client client)
         {
-            var existing = GetById(client.Id);
-            if (existing == null) return;
-
-            existing.FirstName = client.FirstName;
-            existing.LastName = client.LastName;
-            existing.PhoneNumber = client.PhoneNumber;
-            existing.Email = client.Email;
-
+            _context.Clients.Update(client);
             _context.SaveChanges();
         }
     }

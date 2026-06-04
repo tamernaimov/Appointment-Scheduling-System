@@ -1,43 +1,47 @@
-﻿using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Application.Services;
-using Appointment_Scheduling_System.ConsoleUI.Menus;
-using Appointment_Scheduling_System.Infrastructure.Data;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using Appointment_Scheduling_System.Infrastructure.Persistence;
 using Appointment_Scheduling_System.Infrastructure.Repositories;
+using Appointment_Scheduling_System.Application.Services;
+using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.ConsoleUI.Menus;
 
-namespace Appointment_Scheduling_System
+
+var services = new ServiceCollection();
+
+var connectionString =
+    "Server=.\\SQLEXPRESS;Database=AppointmentDb;Integrated Security=True;TrustServerCertificate=True;";
+
+
+services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(connectionString));
+
+services.AddScoped<IClientRepository, ClientRepository>();
+services.AddScoped<IAppointmentRepository, AppointmentRepository>();
+services.AddScoped<IServiceRepository, ServiceRepository>();
+
+services.AddScoped<ClientService>();
+services.AddScoped<AppointmentService>();
+services.AddScoped<ReportService>();
+
+services.AddScoped<IStaffRepository, StaffRepository>();
+services.AddScoped<IScheduleRepository, ScheduleRepository>();
+
+services.AddScoped<ClientService>();
+services.AddScoped<AppointmentService>();
+services.AddScoped<ReportService>();
+services.AddScoped<StaffService>();
+
+services.AddScoped<MainMenu>();
+
+var provider = services.BuildServiceProvider();
+using (var scope = provider.CreateScope())
 {
-    internal class Program
-    {
-        static void Main(string[] args)
-        {
-            var fileService = new JsonFileService();
-            var context = new JsonDataContext(fileService);
+    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
 
-            // Repositories
-            IClientRepository clientRepo = new ClientRepository(context);
-            IAppointmentRepository appointmentRepo = new AppointmentRepository(context);
-            IServiceRepository serviceRepo = new ServiceRepository(context);
-            IScheduleRepository scheduleRepo = new ScheduleRepository(context);
-            IStaffRepository staffRepo = new StaffRepository(context);
-            var staffService = new StaffService(staffRepo);
-
-            // Services
-            var clientService = new ClientService(clientRepo);
-            var appointmentService = new AppointmentService(appointmentRepo, scheduleRepo);
-            var reportService = new ReportService(appointmentRepo, serviceRepo);
-
-            // UI
-            var mainMenu = new MainMenu(
-              clientService,
-              serviceRepo,
-              appointmentService,
-              reportService,
-              staffService,
-              scheduleRepo
-            );
-
-            mainMenu.Show();
-        }
-    }
+    DbSeeder.Seed(context);
 }
+
+var menu = provider.GetRequiredService<MainMenu>();
+menu.Show();
