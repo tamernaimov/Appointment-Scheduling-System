@@ -30,7 +30,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
                 Console.WriteLine("[1] Add Client");
                 Console.WriteLine("[2] Edit Client");
-                Console.WriteLine("[3] aQdmask dkma"); //list clients
+                Console.WriteLine("[3] List Clients"); //list clients
 
                 Console.WriteLine();
                 Console.WriteLine("[0] Back");
@@ -78,17 +78,38 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
         void Edit()
         {
+
+            //not sure
+            List();
+
             Console.Write("Id: ");
             int id = int.Parse(Console.ReadLine());
 
-            _clientService.UpdateClient(new Client
+            var client = _clientService.GetClient(id);
+
+            if (client == null)
             {
-                Id = id,
-                FirstName = "Updated",
-                LastName = "Updated",
-                PhoneNumber = "000",
-                Email = "updated@mail.com"
-            });
+                Console.WriteLine("Client not found.");
+                Console.ReadKey();
+                return;
+            }
+
+            Console.Write("First name: ");
+            client.FirstName = Console.ReadLine();
+
+            Console.Write("Last name: ");
+            client.LastName = Console.ReadLine();
+
+            Console.Write("Phone: ");
+            client.PhoneNumber = Console.ReadLine();
+
+            Console.Write("Email: ");
+            client.Email = Console.ReadLine();
+
+            _clientService.UpdateClient(client);
+
+            Console.WriteLine("Client updated.");
+            Console.ReadKey();
         }
 
         void List()

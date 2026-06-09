@@ -1,12 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Appointment_Scheduling_System.Domain.Entities;
 
-namespace Appointment_Scheduling_System.Application.Interfaces
+public interface IClientService
 {
-    internal class IClientService
-    {
-    }
+    void CreateClient(
+        string firstName,
+        string lastName,
+        string phone,
+        string email);
+
+    List<Client> GetAllClients();
+
+    Client GetClient(int id);
+
+    void UpdateClient(Client client);
 }

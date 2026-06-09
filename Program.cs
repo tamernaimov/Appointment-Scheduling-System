@@ -19,18 +19,15 @@ services.AddDbContext<AppDbContext>(options =>
 services.AddScoped<IClientRepository, ClientRepository>();
 services.AddScoped<IAppointmentRepository, AppointmentRepository>();
 services.AddScoped<IServiceRepository, ServiceRepository>();
-
-services.AddScoped<ClientService>();
-services.AddScoped<AppointmentService>();
-services.AddScoped<ReportService>();
-
 services.AddScoped<IStaffRepository, StaffRepository>();
 services.AddScoped<IScheduleRepository, ScheduleRepository>();
 
-services.AddScoped<ClientService>();
-services.AddScoped<AppointmentService>();
-services.AddScoped<ReportService>();
-services.AddScoped<StaffService>();
+
+services.AddScoped<IClientService, ClientService>();
+services.AddScoped<IAppointmentService, AppointmentService>();
+services.AddScoped<IScheduleService, ScheduleService>();
+services.AddScoped<IReportService, ReportService>();
+services.AddScoped<IStaffService, StaffService>();
 
 services.AddScoped<MainMenu>();
 
