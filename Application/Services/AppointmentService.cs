@@ -4,7 +4,7 @@ using Appointment_Scheduling_System.Domain.Enums;
 
 namespace Appointment_Scheduling_System.Application.Services
 {
-    public class AppointmentService
+    public class AppointmentService : IAppointmentService
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IScheduleRepository _scheduleRepository;

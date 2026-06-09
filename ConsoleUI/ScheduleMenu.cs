@@ -100,7 +100,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("✓ Client added successfully.");
+            Console.WriteLine("✓ Schedule added successfully.");
             Console.ResetColor();
             Console.ReadKey();
         }

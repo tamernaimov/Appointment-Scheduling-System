@@ -3,7 +3,7 @@ using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Services
 {
-    public class StaffService
+    public class StaffService : IStaffService
     {
         private readonly IStaffRepository _staffRepository;
 
