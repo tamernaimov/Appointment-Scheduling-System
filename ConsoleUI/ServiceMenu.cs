@@ -6,9 +6,10 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ServiceMenu
     {
-        private readonly ServiceManagementService _serviceService;
+        private readonly IServiceManagementService _serviceService;
 
-        public ServiceMenu(ServiceManagementService serviceService)
+
+        public ServiceMenu(IServiceManagementService serviceService)
         {
             _serviceService = serviceService;
         }

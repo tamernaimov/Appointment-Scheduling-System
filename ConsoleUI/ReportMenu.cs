@@ -1,12 +1,12 @@
-﻿using Appointment_Scheduling_System.Application.Services;
+﻿using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.Application.Services;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ReportMenu
     {
-        private readonly ReportService _reportService;
-
-        public ReportMenu(ReportService reportService)
+        private readonly IReportService _reportService;
+        public ReportMenu(IReportService reportService)
         {
             _reportService = reportService;
         }
