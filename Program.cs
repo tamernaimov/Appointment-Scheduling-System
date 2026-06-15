@@ -27,6 +27,7 @@ services.AddScoped<IAppointmentService, AppointmentService>();
 services.AddScoped<IScheduleService, ScheduleService>();
 services.AddScoped<IReportService, ReportService>();
 services.AddScoped<IStaffService, StaffService>();
+services.AddScoped<IServiceManagementService, ServiceManagementService>();
 
 // ================= MENUS =================
 services.AddScoped<MainMenu>();
@@ -46,5 +47,14 @@ using (var scope = provider.CreateScope())
     DbSeeder.Seed(context);
 }
 
-var menu = provider.GetRequiredService<MainMenu>();
-menu.Show();
+using (var scope = provider.CreateScope())
+{
+    var scopedProvider = scope.ServiceProvider;
+
+    var context = scopedProvider.GetRequiredService<AppDbContext>();
+    context.Database.Migrate();
+    DbSeeder.Seed(context);
+
+    var menu = scopedProvider.GetRequiredService<MainMenu>();
+    menu.Show();
+}
