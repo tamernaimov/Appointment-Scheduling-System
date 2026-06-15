@@ -3,7 +3,7 @@ using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Services
 {
-    public class StaffService
+    public class StaffService : IStaffService
     {
         private readonly IStaffRepository _staffRepository;
 
@@ -14,12 +14,7 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void AddStaff(string name, string position)
         {
-            var staff = new Staff
-            {
-                Name = name,
-                Position = position
-            };
-
+            var staff = new Staff(name, position);
             _staffRepository.Add(staff);
         }
 

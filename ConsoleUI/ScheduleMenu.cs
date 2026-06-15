@@ -5,11 +5,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ScheduleMenu
     {
-        private readonly IScheduleRepository _scheduleRepository;
+        private readonly IScheduleService _scheduleService;
 
-        public ScheduleMenu(IScheduleRepository scheduleRepository)
+        public ScheduleMenu(IScheduleService scheduleService)
         {
-            _scheduleRepository = scheduleRepository;
+            _scheduleService = scheduleService;
         }
 
         public void Show()
@@ -58,22 +58,17 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Add()
         {
             Console.Write("Staff Id: ");
-            int staffId = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int staffId))
+            {
+                Console.WriteLine("Invalid Id.");
+                Console.ReadKey();
+                return;
+            }
 
-            Console.WriteLine();
-            Console.WriteLine("Days:");
-            Console.WriteLine("1 = Monday");
-            Console.WriteLine("2 = Tuesday");
-            Console.WriteLine("3 = Wednesday");
-            Console.WriteLine("4 = Thursday");
-            Console.WriteLine("5 = Friday");
-            Console.WriteLine("6 = Saturday");
-            Console.WriteLine("7 = Sunday");
-
-            Console.Write("Start day: ");
+            Console.Write("Start day (1-7): ");
             int startDay = int.Parse(Console.ReadLine());
 
-            Console.Write("End day: ");
+            Console.Write("End day (1-7): ");
             int endDay = int.Parse(Console.ReadLine());
 
             Console.Write("Start time (hh:mm): ");
@@ -82,32 +77,30 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("End time (hh:mm): ");
             TimeSpan endTime = TimeSpan.Parse(Console.ReadLine());
 
-            for (int day = startDay; day <= endDay; day++)
+            try
             {
-                DayOfWeek dayOfWeek =
-                    day == 7
-                        ? DayOfWeek.Sunday
-                        : (DayOfWeek)day;
+                _scheduleService.AddScheduleRange(
+                    staffId,
+                    startDay,
+                    endDay,
+                    startTime,
+                    endTime);
 
-                _scheduleRepository.Add(new Schedule
-                {
-                    StaffId = staffId,
-                    DayOfWeek = dayOfWeek,
-                    StartTime = startTime,
-                    EndTime = endTime
-                });
+                Console.WriteLine("Schedule added successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("✓ Client added successfully.");
-            Console.ResetColor();
             Console.ReadKey();
         }
 
-        void List()
+        private void List()
         {
-            foreach (var s in _scheduleRepository.GetAll())
+            var schedules = _scheduleService.GetAllSchedules();
+
+            foreach (var s in schedules)
             {
                 Console.WriteLine($"{s.Id} | Staff:{s.StaffId} | {s.DayOfWeek} | {s.StartTime}-{s.EndTime}");
             }

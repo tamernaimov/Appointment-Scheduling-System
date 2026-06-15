@@ -1,12 +1,12 @@
-﻿using Appointment_Scheduling_System.Application.Services;
+﻿using Appointment_Scheduling_System.Application.Interfaces;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class StaffMenu
     {
-        private readonly StaffService _staffService;
+        private readonly IStaffService _staffService;
 
-        public StaffMenu(StaffService staffService)
+        public StaffMenu(IStaffService staffService)
         {
             _staffService = staffService;
         }
@@ -16,69 +16,48 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Blue;
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("                     STAFF");
-                Console.WriteLine("==================================================");
-
-                Console.ResetColor();
-
-                Console.WriteLine();
-
                 Console.WriteLine("[1] Add Staff");
                 Console.WriteLine("[2] List Staff");
-
-                Console.WriteLine();
                 Console.WriteLine("[0] Back");
-
-                Console.WriteLine();
-                Console.Write("Choose option: ");
 
                 var choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        AddStaff();
+                        Add();
                         break;
-
                     case "2":
-                        ListStaff();
+                        List();
                         break;
-
                     case "0":
                         return;
                 }
             }
         }
 
-        private void AddStaff()
+        void Add()
         {
             Console.Write("Name: ");
-            string name = Console.ReadLine();
+            var name = Console.ReadLine();
 
             Console.Write("Position: ");
-            string position = Console.ReadLine();
+            var pos = Console.ReadLine();
 
-            _staffService.AddStaff(name, position);
+            if (string.IsNullOrWhiteSpace(name) ||
+            string.IsNullOrWhiteSpace(pos))
+            {
+                Console.WriteLine("Invalid input.");
+                return;
+            }
 
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("✓ Staff Member added successfully.");
-            Console.ResetColor();
-            Console.ReadKey();
+            _staffService.AddStaff(name, pos);
         }
 
-        private void ListStaff()
+        void List()
         {
-            var staffMembers = _staffService.GetAllStaff();
-
-            foreach (var staff in staffMembers)
-            {
-                Console.WriteLine(
-                    $"{staff.Id} | {staff.Name} | {staff.Position}");
-            }
+            foreach (var s in _staffService.GetAllStaff())
+                Console.WriteLine($"{s.Id} {s.Name} {s.Position}");
 
             Console.ReadKey();
         }

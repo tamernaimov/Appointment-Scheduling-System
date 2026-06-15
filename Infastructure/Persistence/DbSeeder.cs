@@ -9,8 +9,8 @@ namespace Appointment_Scheduling_System.Infrastructure.Persistence
             if (context.Staff.Any() || context.Services.Any())
                 return;
 
-            var staff1 = new Staff { Name = "Ivan Petrov", Position = "Doctor" };
-            var staff2 = new Staff { Name = "Maria Georgieva", Position = "Doctor" };
+            var staff1 = new Staff("Ivan Petrov", "Doctor");
+            var staff2 = new Staff("Maria Georgieva", "Doctor");
 
             context.Staff.AddRange(staff1, staff2);
             context.SaveChanges();

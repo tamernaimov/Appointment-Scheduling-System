@@ -1,12 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Interfaces
 {
-    internal class IAppointmentService
+    public interface IAppointmentService
     {
+        void CreateAppointment(int clientId, int staffId, int serviceId, DateTime start, DateTime end);
+
+        List<Appointment> GetAll();
+
+        void CancelAppointment(int id);
+
+        void CompleteAppointment(int id);
+
+        void UpdateAppointment(Appointment updatedAppointment);
+
+        void MarkAsNoShow(int id);
     }
 }

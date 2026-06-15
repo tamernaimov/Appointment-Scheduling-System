@@ -3,7 +3,7 @@ using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Services
 {
-    public class ClientService
+    public class ClientService : IClientService
     {
         private readonly IClientRepository _clientRepository;
 
@@ -12,19 +12,9 @@ namespace Appointment_Scheduling_System.Application.Services
             _clientRepository = clientRepository;
         }
 
-        public void CreateClient(string firstName, string lastName, string phone, string email)
+        public void CreateClient(string first, string last, string phone, string email)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
-                throw new ArgumentException("Invalid name");
-
-            var client = new Client
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phone,
-                Email = email
-            };
-
+            var client = new Client(first, last, phone, email);
             _clientRepository.Add(client);
         }
 

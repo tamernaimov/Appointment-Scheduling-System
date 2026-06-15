@@ -1,15 +1,17 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ServiceMenu
     {
-        private readonly IServiceRepository _serviceRepository;
+        private readonly IServiceManagementService _serviceService;
 
-        public ServiceMenu(IServiceRepository serviceRepository)
+
+        public ServiceMenu(IServiceManagementService serviceService)
         {
-            _serviceRepository = serviceRepository;
+            _serviceService = serviceService;
         }
 
         public void Show()
@@ -61,42 +63,36 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             string name = Console.ReadLine();
 
             Console.Write("Price: ");
-            decimal price = decimal.Parse(Console.ReadLine());
-
-            Console.Write("Duration (min): ");
-            int duration = int.Parse(Console.ReadLine());
-
-            _serviceRepository.Add(new Service
+            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
             {
-                Name = name,
-                Price = price,
-                DurationInMinutes = duration
-            });
-
-
-
-            Console.ForegroundColor = ConsoleColor.Green;
-
-            string message = "Service added successfully!";
-
-            foreach (char c in message)
-            {
-                Console.Write(c);
-                Thread.Sleep(30);
+                Console.WriteLine("Invalid price.");
+                Console.ReadKey();
+                return;
             }
 
+            Console.Write("Duration (min): ");
+            if (!int.TryParse(Console.ReadLine(), out int duration))
+            {
+                Console.WriteLine("Invalid duration.");
+                Console.ReadKey();
+                return;
+            }
+
+            _serviceService.AddService(name, duration, price);
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("Service added successfully!");
             Console.ResetColor();
 
-            Console.WriteLine();
             Console.ReadKey();
         }
         private void ListServices()
         {
-            var services = _serviceRepository.GetAll();
+            var services = _serviceService.GetAllServices();
 
             foreach (var s in services)
             {
-                Console.WriteLine($"{s.Id} | {s.Name} | {s.Price} | {s.DurationInMinutes} min");
+                Console.WriteLine($"{s.Id} | {s.Name} | {s.Price} | {s.DurationInMinutes}");
             }
 
             Console.ReadKey();

@@ -1,49 +1,42 @@
-﻿using Appointment_Scheduling_System.Application.Services;
-using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Infrastructure.Repositories;
+﻿using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.ConsoleUI.Menus;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class MainMenu
     {
-        private readonly ClientService _clientService;
-        private readonly IServiceRepository _serviceRepository;
-        private readonly AppointmentService _appointmentService;
-        private readonly ReportService _reportService;
-        private readonly StaffService _staffService;
-        private readonly IScheduleRepository _scheduleRepository;
+        private readonly ClientMenu _clientMenu;
+        private readonly ServiceMenu _serviceMenu;
+        private readonly StaffMenu _staffMenu;
+        private readonly AppointmentMenu _appointmentMenu;
+        private readonly ReportMenu _reportMenu;
+        private readonly ScheduleMenu _scheduleMenu;
+
         public MainMenu(
-            ClientService clientService,
-            IServiceRepository serviceRepository,
-            AppointmentService appointmentService,
-            ReportService reportService,
-            StaffService staffService,
-            IScheduleRepository scheduleRepository)
+            ClientMenu clientMenu,
+            ServiceMenu serviceMenu,
+            StaffMenu staffMenu,
+            AppointmentMenu appointmentMenu,
+            ReportMenu reportMenu,
+            ScheduleMenu scheduleMenu)
         {
-            _clientService = clientService;
-            _serviceRepository = serviceRepository;
-            _appointmentService = appointmentService;
-            _reportService = reportService;
-            _staffService = staffService;
-            _scheduleRepository = scheduleRepository;
+            _clientMenu = clientMenu;
+            _serviceMenu = serviceMenu;
+            _staffMenu = staffMenu;
+            _appointmentMenu = appointmentMenu;
+            _reportMenu = reportMenu;
+            _scheduleMenu = scheduleMenu;
         }
+
         public void Show()
         {
             while (true)
             {
                 Console.Clear();
 
-                Console.ForegroundColor = ConsoleColor.Cyan;
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("         APPOINTMENT SCHEDULING SYSTEM");
-                Console.WriteLine("==================================================");
-
-                Console.ResetColor();
-
-                Console.WriteLine();
-                Console.WriteLine("MAIN MENU");
-                Console.WriteLine("--------------------------------------------------");
+                Console.WriteLine("========================================");
+                Console.WriteLine("   APPOINTMENT SCHEDULING SYSTEM");
+                Console.WriteLine("========================================");
 
                 Console.WriteLine("[1] Clients");
                 Console.WriteLine("[2] Services");
@@ -51,50 +44,39 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 Console.WriteLine("[4] Appointments");
                 Console.WriteLine("[5] Reports");
                 Console.WriteLine("[6] Schedule");
-
-                Console.WriteLine();
                 Console.WriteLine("[0] Exit");
 
-                Console.WriteLine();
-                Console.Write("Choose option: ");
+                Console.Write("Choose: ");
                 var choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        new ClientMenu(_clientService).Show();
+                        _clientMenu.Show();
                         break;
 
                     case "2":
-                        new ServiceMenu(_serviceRepository).Show();
+                        _serviceMenu.Show();
                         break;
+
                     case "3":
-                        new StaffMenu(_staffService).Show();
+                        _staffMenu.Show();
                         break;
 
                     case "4":
-                        new AppointmentMenu(
-                        _appointmentService,
-                        _clientService,
-                        _staffService,
-                        _serviceRepository)
-                    .Show();
+                        _appointmentMenu.Show();
                         break;
 
                     case "5":
-                        new ReportMenu(_reportService).Show();
+                        _reportMenu.Show();
                         break;
 
                     case "6":
-                        new ScheduleMenu(_scheduleRepository).Show();
+                        _scheduleMenu.Show();
                         break;
+
                     case "0":
                         return;
-
-                    default:
-                        Console.WriteLine("Invalid option");
-                        Console.ReadKey();
-                        break;
                 }
             }
         }
