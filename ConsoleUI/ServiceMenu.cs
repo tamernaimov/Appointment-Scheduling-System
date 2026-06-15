@@ -1,13 +1,14 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ServiceMenu
     {
-        private readonly IServiceManagementService _serviceService;
+        private readonly ServiceManagementService _serviceService;
 
-        public ServiceMenu(IServiceManagementService serviceService)
+        public ServiceMenu(ServiceManagementService serviceService)
         {
             _serviceService = serviceService;
         }
