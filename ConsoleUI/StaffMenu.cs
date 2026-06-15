@@ -16,28 +16,28 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
+                Header("STAFF");
+
                 Console.WriteLine("[1] Add Staff");
                 Console.WriteLine("[2] List Staff");
                 Console.WriteLine("[0] Back");
 
-                var choice = Console.ReadLine();
+                Console.Write("\nSelect: ");
 
-                switch (choice)
+                switch (Console.ReadLine())
                 {
-                    case "1":
-                        Add();
-                        break;
-                    case "2":
-                        List();
-                        break;
-                    case "0":
-                        return;
+                    case "1": Add(); break;
+                    case "2": List(); break;
+                    case "0": return;
                 }
             }
         }
 
-        void Add()
+        private void Add()
         {
+            Console.Clear();
+            Header("ADD STAFF");
+
             Console.Write("Name: ");
             var name = Console.ReadLine();
 
@@ -45,21 +45,52 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             var pos = Console.ReadLine();
 
             if (string.IsNullOrWhiteSpace(name) ||
-            string.IsNullOrWhiteSpace(pos))
+                string.IsNullOrWhiteSpace(pos))
             {
-                Console.WriteLine("Invalid input.");
+                Error("Invalid input");
                 return;
             }
 
             _staffService.AddStaff(name, pos);
+            Success("Staff added");
         }
 
-        void List()
+        private void List()
         {
-            foreach (var s in _staffService.GetAllStaff())
-                Console.WriteLine($"{s.Id} {s.Name} {s.Position}");
+            Console.Clear();
+            Header("STAFF LIST");
 
-            Console.ReadKey();
+            foreach (var s in _staffService.GetAllStaff())
+                Console.WriteLine($"{s.Id} | {s.Name} | {s.Position}");
+
+            Pause();
         }
+
+        private void Header(string t)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("==================================");
+            Console.WriteLine($"          {t}");
+            Console.WriteLine("==================================");
+            Console.ResetColor();
+        }
+
+        private void Success(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n✓ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Error(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n✗ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Pause() => Console.ReadKey();
     }
 }

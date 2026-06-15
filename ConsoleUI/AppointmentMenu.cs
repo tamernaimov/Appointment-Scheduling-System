@@ -1,6 +1,6 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Domain.Entities;
 using System;
+using System.Linq;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -28,10 +28,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("                 APPOINTMENTS");
-                Console.WriteLine("==================================================");
+                Header("APPOINTMENTS");
 
                 Console.WriteLine("[1] Create Appointment");
                 Console.WriteLine("[2] Edit Appointment");
@@ -41,10 +38,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 Console.WriteLine("[6] List All");
                 Console.WriteLine("[0] Back");
 
-                Console.Write("\nChoose option: ");
-                var choice = Console.ReadLine();
+                Console.Write("\nSelect: ");
 
-                switch (choice)
+                switch (Console.ReadLine())
                 {
                     case "1": Create(); break;
                     case "2": Edit(); break;
@@ -60,171 +56,188 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Create()
         {
             Console.Clear();
+            Header("CREATE APPOINTMENT");
 
-            Console.WriteLine("=== CLIENTS ===");
+            Console.WriteLine("Clients:");
             foreach (var c in _clientService.GetAllClients())
-                Console.WriteLine($"{c.Id} {c.FirstName} {c.LastName}");
+                Console.WriteLine($"{c.Id} | {c.FirstName} {c.LastName}");
 
             Console.Write("\nClient Id: ");
             if (!int.TryParse(Console.ReadLine(), out int clientId))
                 return;
 
-            Console.WriteLine("\n=== STAFF ===");
+            Console.WriteLine("\nStaff:");
             foreach (var s in _staffService.GetAllStaff())
-                Console.WriteLine($"{s.Id} {s.Name}");
+                Console.WriteLine($"{s.Id} | {s.Name}");
 
             Console.Write("\nStaff Id: ");
             if (!int.TryParse(Console.ReadLine(), out int staffId))
                 return;
 
-            Console.WriteLine("\n=== SERVICES ===");
+            Console.WriteLine("\nServices:");
             foreach (var s in _serviceService.GetAllServices())
-                Console.WriteLine($"{s.Id} {s.Name} {s.Price}");
+                Console.WriteLine($"{s.Id} | {s.Name} | {s.Price}");
 
             Console.Write("\nService Id: ");
             if (!int.TryParse(Console.ReadLine(), out int serviceId))
                 return;
 
             Console.Write("Start (yyyy-MM-dd HH:mm): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime start))
-                return;
+            if (!DateTime.TryParse(Console.ReadLine(), out var start)) return;
 
             Console.Write("End (yyyy-MM-dd HH:mm): ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime end))
-                return;
+            if (!DateTime.TryParse(Console.ReadLine(), out var end)) return;
 
             try
             {
-                _appointmentService.CreateAppointment(
-                    clientId,
-                    staffId,
-                    serviceId,
-                    start,
-                    end
-                );
-
-                Console.WriteLine("Appointment created.");
+                _appointmentService.CreateAppointment(clientId, staffId, serviceId, start, end);
+                Success("Appointment created");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
         private void Edit()
         {
-            ListAllWithoutPause();
+            Console.Clear();
+            Header("EDIT APPOINTMENT");
+
+            ListAllInternal();
 
             Console.Write("\nAppointment Id: ");
-            int id = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int id)) return;
 
             Console.Write("New Start: ");
-            DateTime start = DateTime.Parse(Console.ReadLine());
+            if (!DateTime.TryParse(Console.ReadLine(), out var start)) return;
 
             Console.Write("New End: ");
-            DateTime end = DateTime.Parse(Console.ReadLine());
+            if (!DateTime.TryParse(Console.ReadLine(), out var end)) return;
 
             var appointment = _appointmentService.GetAll()
                 .FirstOrDefault(a => a.Id == id);
 
             if (appointment == null)
             {
-                Console.WriteLine("Not found");
+                Error("Not found");
                 return;
             }
 
             try
             {
                 appointment.Reschedule(start, end);
-
                 _appointmentService.UpdateAppointment(appointment);
-
-                Console.WriteLine("Updated");
+                Success("Updated");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
         private void Cancel()
         {
+            Console.Clear();
+            Header("CANCEL APPOINTMENT");
+
             Console.Write("Appointment Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int id))
-                return;
+            if (!int.TryParse(Console.ReadLine(), out int id)) return;
 
             try
             {
                 _appointmentService.CancelAppointment(id);
-                Console.WriteLine("Cancelled.");
+                Success("Cancelled");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
         private void Complete()
         {
+            Console.Clear();
+            Header("COMPLETE APPOINTMENT");
+
             Console.Write("Appointment Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int id))
-                return;
+            if (!int.TryParse(Console.ReadLine(), out int id)) return;
 
             try
             {
                 _appointmentService.CompleteAppointment(id);
-                Console.WriteLine("Completed.");
+                Success("Completed");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
         private void NoShow()
         {
+            Console.Clear();
+            Header("MARK NOSHOW");
+
             Console.Write("Appointment Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int id))
-                return;
+            if (!int.TryParse(Console.ReadLine(), out int id)) return;
 
             try
             {
                 _appointmentService.MarkAsNoShow(id);
-                Console.WriteLine("Marked as NoShow.");
+                Success("Marked as NoShow");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
         private void ListAll()
         {
             Console.Clear();
+            Header("ALL APPOINTMENTS");
 
-            ListAllWithoutPause();
-            Console.ReadKey();
+            ListAllInternal();
+            Pause();
         }
 
-        private void ListAllWithoutPause()
+        private void ListAllInternal()
         {
             foreach (var a in _appointmentService.GetAll())
             {
                 Console.WriteLine($"[{a.Id}] C:{a.ClientId} S:{a.StaffId} Ser:{a.ServiceId}");
                 Console.WriteLine($"{a.StartTime:dd/MM HH:mm} - {a.EndTime:HH:mm}");
                 Console.WriteLine($"Status: {a.Status}");
-                Console.WriteLine("----------------------------------------");
+                Console.WriteLine("----------------------------------");
             }
         }
+
+        private void Header(string t)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("==================================");
+            Console.WriteLine($"          {t}");
+            Console.WriteLine("==================================");
+            Console.ResetColor();
+        }
+
+        private void Success(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n✓ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Error(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n✗ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Pause() => Console.ReadKey();
     }
 }

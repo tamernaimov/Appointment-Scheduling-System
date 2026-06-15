@@ -1,5 +1,4 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -17,51 +16,32 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.DarkYellow;
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("                   SCHEDULE");
-                Console.WriteLine("==================================================");
-
-                Console.ResetColor();
-
-                Console.WriteLine();
+                Header("SCHEDULE");
 
                 Console.WriteLine("[1] Add Working Days");
                 Console.WriteLine("[2] View Schedule");
-
-                Console.WriteLine();
                 Console.WriteLine("[0] Back");
 
-                Console.WriteLine();
-                Console.Write("Choose option: ");
+                Console.Write("\nSelect: ");
 
-                var choice = Console.ReadLine();
-
-                switch (choice)
+                switch (Console.ReadLine())
                 {
-                    case "1":
-                        Add();
-                        break;
-
-                    case "2":
-                        List();
-                        break;
-
-                    case "0":
-                        return;
+                    case "1": Add(); break;
+                    case "2": List(); break;
+                    case "0": return;
                 }
             }
         }
 
         private void Add()
         {
+            Console.Clear();
+            Header("ADD SCHEDULE");
+
             Console.Write("Staff Id: ");
             if (!int.TryParse(Console.ReadLine(), out int staffId))
             {
-                Console.WriteLine("Invalid Id.");
-                Console.ReadKey();
+                Error("Invalid Id");
                 return;
             }
 
@@ -71,41 +51,59 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("End day (1-7): ");
             int endDay = int.Parse(Console.ReadLine());
 
-            Console.Write("Start time (hh:mm): ");
-            TimeSpan startTime = TimeSpan.Parse(Console.ReadLine());
+            Console.Write("Start time: ");
+            var start = TimeSpan.Parse(Console.ReadLine());
 
-            Console.Write("End time (hh:mm): ");
-            TimeSpan endTime = TimeSpan.Parse(Console.ReadLine());
+            Console.Write("End time: ");
+            var end = TimeSpan.Parse(Console.ReadLine());
 
             try
             {
-                _scheduleService.AddScheduleRange(
-                    staffId,
-                    startDay,
-                    endDay,
-                    startTime,
-                    endTime);
-
-                Console.WriteLine("Schedule added successfully.");
+                _scheduleService.AddScheduleRange(staffId, startDay, endDay, start, end);
+                Success("Schedule added");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Error(ex.Message);
             }
-
-            Console.ReadKey();
         }
 
         private void List()
         {
-            var schedules = _scheduleService.GetAllSchedules();
+            Console.Clear();
+            Header("SCHEDULE LIST");
 
-            foreach (var s in schedules)
-            {
+            foreach (var s in _scheduleService.GetAllSchedules())
                 Console.WriteLine($"{s.Id} | Staff:{s.StaffId} | {s.DayOfWeek} | {s.StartTime}-{s.EndTime}");
-            }
 
-            Console.ReadKey();
+            Pause();
         }
+
+        private void Header(string t)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("==================================");
+            Console.WriteLine($"          {t}");
+            Console.WriteLine("==================================");
+            Console.ResetColor();
+        }
+
+        private void Success(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n✓ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Error(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n✗ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Pause() => Console.ReadKey();
     }
 }

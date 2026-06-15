@@ -1,13 +1,10 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Application.Services;
-using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ServiceMenu
     {
         private readonly IServiceManagementService _serviceService;
-
 
         public ServiceMenu(IServiceManagementService serviceService)
         {
@@ -19,83 +16,85 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Magenta;
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("                   SERVICES");
-                Console.WriteLine("==================================================");
-
-                Console.ResetColor();
-
-                Console.WriteLine();
+                Header("SERVICES");
 
                 Console.WriteLine("[1] Add Service");
                 Console.WriteLine("[2] List Services");
-
-                Console.WriteLine();
                 Console.WriteLine("[0] Back");
 
-                Console.WriteLine();
-                Console.Write("Choose option: ");
+                Console.Write("\nSelect: ");
 
-                var choice = Console.ReadLine();
-
-                switch (choice)
+                switch (Console.ReadLine())
                 {
-                    case "1":
-                        AddService();
-                        break;
-
-                    case "2":
-                        ListServices();
-                        break;
-
-                    case "0":
-                        return;
+                    case "1": Add(); break;
+                    case "2": List(); break;
+                    case "0": return;
                 }
             }
         }
 
-        private void AddService()
+        private void Add()
         {
+            Console.Clear();
+            Header("ADD SERVICE");
+
             Console.Write("Name: ");
-            string name = Console.ReadLine();
+            var name = Console.ReadLine();
 
             Console.Write("Price: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
+            if (!decimal.TryParse(Console.ReadLine(), out var price))
             {
-                Console.WriteLine("Invalid price.");
-                Console.ReadKey();
+                Error("Invalid price");
                 return;
             }
 
-            Console.Write("Duration (min): ");
-            if (!int.TryParse(Console.ReadLine(), out int duration))
+            Console.Write("Duration: ");
+            if (!int.TryParse(Console.ReadLine(), out var dur))
             {
-                Console.WriteLine("Invalid duration.");
-                Console.ReadKey();
+                Error("Invalid duration");
                 return;
             }
 
-            _serviceService.AddService(name, duration, price);
-
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("Service added successfully!");
-            Console.ResetColor();
-
-            Console.ReadKey();
+            _serviceService.AddService(name, dur, price);
+            Success("Service added");
         }
-        private void ListServices()
+
+        private void List()
         {
-            var services = _serviceService.GetAllServices();
+            Console.Clear();
+            Header("SERVICE LIST");
 
-            foreach (var s in services)
-            {
+            foreach (var s in _serviceService.GetAllServices())
                 Console.WriteLine($"{s.Id} | {s.Name} | {s.Price} | {s.DurationInMinutes}");
-            }
 
-            Console.ReadKey();
+            Pause();
         }
+
+        private void Header(string t)
+        {
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("==================================");
+            Console.WriteLine($"        {t}");
+            Console.WriteLine("==================================");
+            Console.ResetColor();
+        }
+
+        private void Success(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"\n✓ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Error(string m)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n✗ {m}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Pause() => Console.ReadKey();
     }
 }
