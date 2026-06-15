@@ -19,48 +19,16 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void CreateAppointment(Appointment appointment)
         {
-            if (appointment.StartTime >= appointment.EndTime)
-            {
-                throw new Exception("Start time must be before end time.");
-            }
-            if (appointment.StartTime < DateTime.Now)
-            {
-                throw new Exception("Appointment cannot be in the past.");
-            }
-            var schedule = _scheduleRepository
-                .GetAll()
-                .FirstOrDefault(s =>
-                    s.StaffId == appointment.StaffId &&
-                    s.DayOfWeek == appointment.StartTime.DayOfWeek);
-            
-            if (schedule == null)
-            {
-                throw new Exception("Staff is not working on this day.");
-            }
-
-            if (appointment.StartTime.TimeOfDay < schedule.StartTime ||
-                appointment.EndTime.TimeOfDay > schedule.EndTime)
-            {
-                throw new Exception("Appointment is outside working hours.");
-            }
-
-            bool hasConflict = _appointmentRepository
-                .GetAll()
-                .Any(a =>
-                    a.StaffId == appointment.StaffId &&
-                    a.Status != AppointmentStatus.Cancelled &&
-                    a.StartTime < appointment.EndTime &&
-                    appointment.StartTime < a.EndTime);
-
-            if (hasConflict)
-            {
-                throw new Exception("Time slot is already booked.");
-            }
+            ValidateAppointmentTimes(appointment);
+            ValidateNotInPast(appointment);
+            ValidateWorkingHours(appointment);
+            ValidateNoConflict(appointment);
 
             appointment.Status = AppointmentStatus.Scheduled;
 
             _appointmentRepository.Add(appointment);
         }
+
         public List<Appointment> GetAll()
         {
             return _appointmentRepository.GetAll();
@@ -68,16 +36,16 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void CancelAppointment(int id)
         {
-            var appointment = _appointmentRepository.GetById(id);
+            var appointment = GetOrThrow(id);
 
-            if (appointment == null)
-                return;
+            if (appointment.Status == AppointmentStatus.Completed)
+                throw new InvalidOperationException("Completed appointment cannot be cancelled.");
+
+            if (appointment.StartTime <= DateTime.Now)
+                throw new InvalidOperationException("Past appointment cannot be cancelled.");
 
             if ((appointment.StartTime - DateTime.Now).TotalHours < 24)
-            {
-                throw new Exception(
-                    "Appointments can only be cancelled at least 24 hours in advance.");
-            }
+                throw new InvalidOperationException("Must cancel at least 24 hours before.");
 
             appointment.Status = AppointmentStatus.Cancelled;
 
@@ -86,59 +54,100 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void CompleteAppointment(int id)
         {
-            var appointment = _appointmentRepository.GetById(id);
-
-            if (appointment == null)
-                return;
+            var appointment = GetOrThrow(id);
 
             if (appointment.Status == AppointmentStatus.Cancelled)
-            {
-                throw new Exception("Cancelled appointments cannot be completed.");
-            }
+                throw new InvalidOperationException("Cancelled appointment cannot be completed.");
 
             appointment.Status = AppointmentStatus.Completed;
 
             _appointmentRepository.Update(appointment);
         }
-        public void UpdateAppointment(Appointment updatedAppointment)
+
+        public void UpdateAppointment(Appointment updated)
         {
-            var existing = _appointmentRepository.GetById(updatedAppointment.Id);
+            var existing = GetOrThrow(updated.Id);
 
-            if (existing == null)
-                throw new Exception("Appointment not found.");
+            ValidateAppointmentTimes(updated);
+            ValidateNoConflict(updated, updated.Id);
+            ValidateWorkingHours(updated);
 
-            bool hasConflict = _appointmentRepository
-                .GetAll()
-                .Any(a =>
-                    a.Id != updatedAppointment.Id &&
-                    a.StaffId == updatedAppointment.StaffId &&
-                    a.Status != AppointmentStatus.Cancelled &&
-                    a.StartTime < updatedAppointment.EndTime &&
-                    updatedAppointment.StartTime < a.EndTime);
+            existing.StartTime = updated.StartTime;
+            existing.EndTime = updated.EndTime;
+            existing.ServiceId = updated.ServiceId;
+            existing.StaffId = updated.StaffId;
 
-            if (hasConflict)
-            {
-                throw new Exception("Time slot is already booked.");
-            }
-
-            _appointmentRepository.Update(updatedAppointment);
+            _appointmentRepository.Update(existing);
         }
+
         public void MarkAsNoShow(int id)
         {
-            var appointment = _appointmentRepository.GetById(id);
-
-            if (appointment == null)
-                return;
+            var appointment = GetOrThrow(id);
 
             if (appointment.Status == AppointmentStatus.Cancelled)
-            {
-                throw new Exception("Cancelled appointments cannot be marked as NoShow.");
-                //may need a return
-            }
+                throw new InvalidOperationException("Cancelled appointment cannot be NoShow.");
+
+            if (appointment.Status == AppointmentStatus.Completed)
+                throw new InvalidOperationException("Completed appointment cannot be NoShow.");
 
             appointment.Status = AppointmentStatus.NoShow;
 
             _appointmentRepository.Update(appointment);
+        }
+
+        // ===================== PRIVATE VALIDATION =====================
+
+        private Appointment GetOrThrow(int id)
+        {
+            var appointment = _appointmentRepository.GetById(id);
+
+            if (appointment == null)
+                throw new InvalidOperationException("Appointment not found.");
+
+            return appointment;
+        }
+
+        private void ValidateAppointmentTimes(Appointment a)
+        {
+            if (a.StartTime >= a.EndTime)
+                throw new ArgumentException("Start time must be before end time.");
+        }
+
+        private void ValidateNotInPast(Appointment a)
+        {
+            if (a.StartTime < DateTime.Now)
+                throw new InvalidOperationException("Cannot schedule in the past.");
+        }
+
+        private void ValidateWorkingHours(Appointment a)
+        {
+            var schedule = _scheduleRepository
+                .GetAll()
+                .FirstOrDefault(s =>
+                    s.StaffId == a.StaffId &&
+                    s.DayOfWeek == a.StartTime.DayOfWeek);
+
+            if (schedule == null)
+                throw new InvalidOperationException("Staff is not working that day.");
+
+            if (a.StartTime.TimeOfDay < schedule.StartTime ||
+                a.EndTime.TimeOfDay > schedule.EndTime)
+            {
+                throw new InvalidOperationException("Outside working hours.");
+            }
+        }
+
+        private void ValidateNoConflict(Appointment a, int? ignoreId = null)
+        {
+            bool conflict = _appointmentRepository.GetAll().Any(x =>
+                x.StaffId == a.StaffId &&
+                x.Status != AppointmentStatus.Cancelled &&
+                (ignoreId == null || x.Id != ignoreId) &&
+                x.StartTime < a.EndTime &&
+                a.StartTime < x.EndTime);
+
+            if (conflict)
+                throw new InvalidOperationException("Time slot already booked.");
         }
     }
 }

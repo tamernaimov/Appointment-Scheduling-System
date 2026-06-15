@@ -5,11 +5,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ScheduleMenu
     {
-        private readonly IScheduleRepository _scheduleRepository;
+        private readonly IScheduleService _scheduleService;
 
-        public ScheduleMenu(IScheduleRepository scheduleRepository)
+        public ScheduleMenu(IScheduleService scheduleService)
         {
-            _scheduleRepository = scheduleRepository;
+            _scheduleService = scheduleService;
         }
 
         public void Show()
@@ -58,30 +58,18 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Add()
         {
             Console.Write("Staff Id: ");
-            int staffId = int.Parse(Console.ReadLine());
-
-            Console.WriteLine();
-            Console.WriteLine("Days:");
-            Console.WriteLine("1 = Monday");
-            Console.WriteLine("2 = Tuesday");
-            Console.WriteLine("3 = Wednesday");
-            Console.WriteLine("4 = Thursday");
-            Console.WriteLine("5 = Friday");
-            Console.WriteLine("6 = Saturday");
-            Console.WriteLine("7 = Sunday");
-
-            Console.Write("Start day: ");
-            int startDay = int.Parse(Console.ReadLine());
-
-            Console.Write("End day: ");
-            int endDay = int.Parse(Console.ReadLine());
-
-            if (startDay > endDay)
+            if (!int.TryParse(Console.ReadLine(), out int staffId))
             {
-                Console.WriteLine("Start day must be before End day.");
+                Console.WriteLine("Invalid Id.");
                 Console.ReadKey();
                 return;
             }
+
+            Console.Write("Start day (1-7): ");
+            int startDay = int.Parse(Console.ReadLine());
+
+            Console.Write("End day (1-7): ");
+            int endDay = int.Parse(Console.ReadLine());
 
             Console.Write("Start time (hh:mm): ");
             TimeSpan startTime = TimeSpan.Parse(Console.ReadLine());
@@ -89,39 +77,30 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("End time (hh:mm): ");
             TimeSpan endTime = TimeSpan.Parse(Console.ReadLine());
 
-            if (startTime >= endTime)
+            try
             {
-                Console.WriteLine("Start time must be before End time.");
-                Console.ReadKey();
-                return;
+                _scheduleService.AddScheduleRange(
+                    staffId,
+                    startDay,
+                    endDay,
+                    startTime,
+                    endTime);
+
+                Console.WriteLine("Schedule added successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
             }
 
-            for (int day = startDay; day <= endDay; day++)
-            {
-                DayOfWeek dayOfWeek =
-                    day == 7
-                        ? DayOfWeek.Sunday
-                        : (DayOfWeek)day;
-
-                _scheduleRepository.Add(new Schedule
-                {
-                    StaffId = staffId,
-                    DayOfWeek = dayOfWeek,
-                    StartTime = startTime,
-                    EndTime = endTime
-                });
-            }
-
-            Console.WriteLine();
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine("✓ Schedule added successfully.");
-            Console.ResetColor();
             Console.ReadKey();
         }
 
-        void List()
+        private void List()
         {
-            foreach (var s in _scheduleRepository.GetAll())
+            var schedules = _scheduleService.GetAllSchedules();
+
+            foreach (var s in schedules)
             {
                 Console.WriteLine($"{s.Id} | Staff:{s.StaffId} | {s.DayOfWeek} | {s.StartTime}-{s.EndTime}");
             }
