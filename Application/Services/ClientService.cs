@@ -14,8 +14,17 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void CreateClient(string firstName, string lastName, string phone, string email)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
-                throw new ArgumentException("Invalid name");
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new ArgumentException("First name is required.");
+
+            if (string.IsNullOrWhiteSpace(lastName))
+                throw new ArgumentException("Last name is required.");
+
+            if (string.IsNullOrWhiteSpace(phone))
+                throw new ArgumentException("Phone number is required.");
+
+            if (string.IsNullOrWhiteSpace(email))
+                throw new ArgumentException("Email is required.");
 
             var client = new Client
             {

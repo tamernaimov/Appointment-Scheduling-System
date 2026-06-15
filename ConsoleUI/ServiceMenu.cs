@@ -61,10 +61,21 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             string name = Console.ReadLine();
 
             Console.Write("Price: ");
-            decimal price = decimal.Parse(Console.ReadLine());
+
+            if (!decimal.TryParse(Console.ReadLine(), out decimal price) || price < 0)
+            {
+                Console.WriteLine("Invalid price.");
+                Console.ReadKey();
+                return;
+            }
 
             Console.Write("Duration (min): ");
-            int duration = int.Parse(Console.ReadLine());
+            if (!int.TryParse(Console.ReadLine(), out int duration) || duration <= 0)
+            {
+                Console.WriteLine("Invalid duration.");
+                Console.ReadKey();
+                return;
+            }
 
             _serviceRepository.Add(new Service
             {
