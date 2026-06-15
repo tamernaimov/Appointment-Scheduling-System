@@ -5,10 +5,14 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
     public class ScheduleMenu
     {
         private readonly IScheduleService _scheduleService;
+        private readonly IStaffService _staffService;
 
-        public ScheduleMenu(IScheduleService scheduleService)
+        public ScheduleMenu(
+            IScheduleService scheduleService,
+            IStaffService staffService)
         {
             _scheduleService = scheduleService;
+            _staffService = staffService;
         }
 
         public void Show()
@@ -38,29 +42,78 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("ADD SCHEDULE");
 
-            Console.Write("Staff Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int staffId))
+            // ================= STAFF LIST =================
+            Console.WriteLine("=== STAFF LIST ===");
+
+            var staffList = _staffService.GetAllStaff();
+
+            foreach (var s in staffList)
+                Console.WriteLine($"{s.Id} | {s.Name} | {s.Position}");
+
+            Console.Write("\nSelect Staff Id: ");
+
+            if (!int.TryParse(Console.ReadLine(), out int staffId) ||
+                !staffList.Any(x => x.Id == staffId))
             {
-                Error("Invalid Id");
+                Error("Invalid Staff Id");
                 return;
             }
 
-            Console.Write("Start day (1-7): ");
-            int startDay = int.Parse(Console.ReadLine());
+            // ================= DAYS =================
+            Console.WriteLine("\nDays (1-7):");
+            Console.WriteLine("1 Monday");
+            Console.WriteLine("2 Tuesday");
+            Console.WriteLine("3 Wednesday");
+            Console.WriteLine("4 Thursday");
+            Console.WriteLine("5 Friday");
+            Console.WriteLine("6 Saturday");
+            Console.WriteLine("7 Sunday");
 
-            Console.Write("End day (1-7): ");
-            int endDay = int.Parse(Console.ReadLine());
+            Console.Write("Start day: ");
+            if (!int.TryParse(Console.ReadLine(), out int startDay) || startDay < 1 || startDay > 7)
+            {
+                Error("Invalid start day");
+                return;
+            }
 
-            Console.Write("Start time: ");
-            var start = TimeSpan.Parse(Console.ReadLine());
+            Console.Write("End day: ");
+            if (!int.TryParse(Console.ReadLine(), out int endDay) || endDay < startDay || endDay > 7)
+            {
+                Error("Invalid end day");
+                return;
+            }
 
-            Console.Write("End time: ");
-            var end = TimeSpan.Parse(Console.ReadLine());
+            // ================= TIME =================
+            Console.Write("Start time (hh:mm): ");
+            if (!TimeSpan.TryParse(Console.ReadLine(), out var startTime))
+            {
+                Error("Invalid start time");
+                return;
+            }
+
+            Console.Write("End time (hh:mm): ");
+            if (!TimeSpan.TryParse(Console.ReadLine(), out var endTime))
+            {
+                Error("Invalid end time");
+                return;
+            }
+
+            if (startTime >= endTime)
+            {
+                Error("Start time must be before end time");
+                return;
+            }
 
             try
             {
-                _scheduleService.AddScheduleRange(staffId, startDay, endDay, start, end);
-                Success("Schedule added");
+                _scheduleService.AddScheduleRange(
+                    staffId,
+                    startDay,
+                    endDay,
+                    startTime,
+                    endTime);
+
+                Success("Schedule added successfully");
             }
             catch (Exception ex)
             {
