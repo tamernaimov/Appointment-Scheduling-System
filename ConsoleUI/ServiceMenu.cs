@@ -5,11 +5,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ServiceMenu
     {
-        private readonly IServiceRepository _serviceRepository;
+        private readonly IServiceManagementService _serviceService;
 
-        public ServiceMenu(IServiceRepository serviceRepository)
+        public ServiceMenu(IServiceManagementService serviceService)
         {
-            _serviceRepository = serviceRepository;
+            _serviceService = serviceService;
         }
 
         public void Show()
@@ -61,8 +61,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             string name = Console.ReadLine();
 
             Console.Write("Price: ");
-
-            if (!decimal.TryParse(Console.ReadLine(), out decimal price) || price < 0)
+            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
             {
                 Console.WriteLine("Invalid price.");
                 Console.ReadKey();
@@ -70,44 +69,28 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             }
 
             Console.Write("Duration (min): ");
-            if (!int.TryParse(Console.ReadLine(), out int duration) || duration <= 0)
+            if (!int.TryParse(Console.ReadLine(), out int duration))
             {
                 Console.WriteLine("Invalid duration.");
                 Console.ReadKey();
                 return;
             }
 
-            _serviceRepository.Add(new Service
-            {
-                Name = name,
-                Price = price,
-                DurationInMinutes = duration
-            });
-
-
+            _serviceService.AddService(name, duration, price);
 
             Console.ForegroundColor = ConsoleColor.Green;
-
-            string message = "Service added successfully!";
-
-            foreach (char c in message)
-            {
-                Console.Write(c);
-                Thread.Sleep(30);
-            }
-
+            Console.WriteLine("Service added successfully!");
             Console.ResetColor();
 
-            Console.WriteLine();
             Console.ReadKey();
         }
         private void ListServices()
         {
-            var services = _serviceRepository.GetAll();
+            var services = _serviceService.GetAllServices();
 
             foreach (var s in services)
             {
-                Console.WriteLine($"{s.Id} | {s.Name} | {s.Price} | {s.DurationInMinutes} min");
+                Console.WriteLine($"{s.Id} | {s.Name} | {s.Price} | {s.DurationInMinutes}");
             }
 
             Console.ReadKey();

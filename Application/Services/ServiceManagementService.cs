@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-using Appointment_Scheduling_System.Application.Interfaces;
+﻿using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Services
 {
-    public class ServiceManagementService
+    public class ServiceManagementService : IServiceManagementService
     {
         private readonly IServiceRepository _serviceRepository;
 
@@ -20,6 +14,15 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void AddService(string name, int duration, decimal price)
         {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name is required.");
+
+            if (duration <= 0)
+                throw new ArgumentException("Duration must be positive.");
+
+            if (price < 0)
+                throw new ArgumentException("Price cannot be negative.");
+
             var service = new Service
             {
                 Name = name,

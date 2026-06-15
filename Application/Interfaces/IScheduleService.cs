@@ -13,5 +13,11 @@ namespace Appointment_Scheduling_System.Application.Interfaces
         List<Schedule> GetAllSchedules();
 
         List<Schedule> GetSchedulesForStaff(int staffId);
+        void AddScheduleRange(
+            int staffId,
+            int startDay,
+            int endDay,
+            TimeSpan startTime,
+            TimeSpan endTime);
     }
 }
