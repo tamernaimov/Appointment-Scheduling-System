@@ -1,6 +1,4 @@
-﻿using Appointment_Scheduling_System.Application.Services;
-using Appointment_Scheduling_System.Domain.Entities;
-using Azure;
+﻿using Appointment_Scheduling_System.Application.Interfaces;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -18,26 +16,10 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.Yellow;
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("                    CLIENTS");
-                Console.WriteLine("==================================================");
-
-                Console.ResetColor();
-
-                Console.WriteLine();
-
                 Console.WriteLine("[1] Add Client");
                 Console.WriteLine("[2] Edit Client");
-                Console.WriteLine("[3] List Clients"); //list clients
-
-                Console.WriteLine();
+                Console.WriteLine("[3] List Clients");
                 Console.WriteLine("[0] Back");
-
-                Console.WriteLine();
-                Console.Write("Choose option: ");
 
                 var choice = Console.ReadLine();
 
@@ -46,27 +28,27 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                     case "1":
                         Add();
                         break;
-
                     case "2":
                         Edit();
                         break;
-
                     case "3":
                         List();
                         break;
-
                     case "0":
                         return;
                 }
             }
         }
+
         void Add()
         {
-            Console.Write("First name: ");
+            Console.Write("First: ");
             var fn = Console.ReadLine();
 
-            Console.Write("Last name: ");
+            Console.Write("Last: ");
             var ln = Console.ReadLine();
+
+           
 
             Console.Write("Phone: ");
             var ph = Console.ReadLine();
@@ -74,13 +56,21 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("Email: ");
             var em = Console.ReadLine();
 
+
+            if (string.IsNullOrWhiteSpace(fn) ||
+                string.IsNullOrWhiteSpace(ln) ||
+                string.IsNullOrWhiteSpace(ph) ||
+                string.IsNullOrWhiteSpace(em))
+            {
+                Console.WriteLine("Invalid input.");
+                Console.ReadKey();
+                return;
+            }
             _clientService.CreateClient(fn, ln, ph, em);
         }
 
         void Edit()
         {
-
-            //not sure
             List(false);
 
             Console.Write("Id: ");
@@ -89,50 +79,30 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             var client = _clientService.GetClient(id);
 
             if (client == null)
-            {
-                Console.WriteLine("Client not found.");
-                Console.ReadKey();
                 return;
-            }
 
-            Console.Write("First name: ");
-            var first = Console.ReadLine();
+            Console.Write("First: ");
+            var f = Console.ReadLine();
 
-            Console.Write("Last name: ");
-            var last = Console.ReadLine();
+            Console.Write("Last: ");
+            var l = Console.ReadLine();
 
             Console.Write("Phone: ");
-            var phone = Console.ReadLine();
+            var p = Console.ReadLine();
 
             Console.Write("Email: ");
-            var email = Console.ReadLine();
+            var e = Console.ReadLine();
 
-            try
-            {
-                client.SetName(first, last);
-                client.SetContact(phone, email);
-
-                _clientService.UpdateClient(client);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-
-
+            client.SetName(f, l);
+            client.SetContact(p, e);
 
             _clientService.UpdateClient(client);
-
-            Console.WriteLine("Client updated.");
-            Console.ReadKey();
         }
 
         void List(bool pause = true)
         {
             foreach (var c in _clientService.GetAllClients())
-            {
                 Console.WriteLine($"{c.Id} {c.FirstName} {c.LastName}");
-            }
 
             if (pause)
                 Console.ReadKey();

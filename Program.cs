@@ -24,23 +24,21 @@ services.AddScoped<IScheduleRepository, ScheduleRepository>();
 // ================= SERVICES =================
 services.AddScoped<IClientService, ClientService>();
 services.AddScoped<IAppointmentService, AppointmentService>();
-services.AddScoped<IStaffService, StaffService>();
 services.AddScoped<IScheduleService, ScheduleService>();
 services.AddScoped<IReportService, ReportService>();
-services.AddScoped<IServiceManagementService, ServiceManagementService>();
+services.AddScoped<IStaffService, StaffService>();
 
-// ================= UI =================
+// ================= MENUS =================
 services.AddScoped<MainMenu>();
 services.AddScoped<ClientMenu>();
-services.AddScoped<ServiceMenu>();
 services.AddScoped<StaffMenu>();
+services.AddScoped<ServiceMenu>();
 services.AddScoped<AppointmentMenu>();
 services.AddScoped<ReportMenu>();
 services.AddScoped<ScheduleMenu>();
 
 var provider = services.BuildServiceProvider();
 
-// DB INIT
 using (var scope = provider.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
@@ -48,6 +46,5 @@ using (var scope = provider.CreateScope())
     DbSeeder.Seed(context);
 }
 
-// START APP
 var menu = provider.GetRequiredService<MainMenu>();
 menu.Show();
