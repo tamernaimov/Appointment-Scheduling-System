@@ -1,15 +1,33 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Appointment_Scheduling_System.Domain.Entities
+﻿namespace Appointment_Scheduling_System.Domain.Entities
 {
     public class Staff
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Position { get; set; }
+        public int Id { get; private set; }
+        public string Name { get; private set; }
+        public string Position { get; private set; }
+
+        private Staff() { }
+
+        public Staff(string name, string position)
+        {
+            SetName(name);
+            SetPosition(position);
+        }
+
+        public void SetName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new ArgumentException("Name required");
+
+            Name = name;
+        }
+
+        public void SetPosition(string position)
+        {
+            if (string.IsNullOrWhiteSpace(position))
+                throw new ArgumentException("Position required");
+
+            Position = position;
+        }
     }
 }

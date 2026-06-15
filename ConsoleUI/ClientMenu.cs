@@ -96,16 +96,30 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             }
 
             Console.Write("First name: ");
-            client.FirstName = Console.ReadLine();
+            var first = Console.ReadLine();
 
             Console.Write("Last name: ");
-            client.LastName = Console.ReadLine();
+            var last = Console.ReadLine();
 
             Console.Write("Phone: ");
-            client.PhoneNumber = Console.ReadLine();
+            var phone = Console.ReadLine();
 
             Console.Write("Email: ");
-            client.Email = Console.ReadLine();
+            var email = Console.ReadLine();
+
+            try
+            {
+                client.SetName(first, last);
+                client.SetContact(phone, email);
+
+                _clientService.UpdateClient(client);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+
 
             _clientService.UpdateClient(client);
 

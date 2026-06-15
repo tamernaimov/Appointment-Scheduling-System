@@ -14,18 +14,7 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void AddStaff(string name, string position)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new ArgumentException("Staff name is required.");
-
-            if (string.IsNullOrWhiteSpace(position))
-                throw new ArgumentException("Position is required.");
-
-            var staff = new Staff
-            {
-                Name = name.Trim(),
-                Position = position.Trim()
-            };
-
+            var staff = new Staff(name, position);
             _staffRepository.Add(staff);
         }
 

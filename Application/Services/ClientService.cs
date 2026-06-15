@@ -12,28 +12,9 @@ namespace Appointment_Scheduling_System.Application.Services
             _clientRepository = clientRepository;
         }
 
-        public void CreateClient(string firstName, string lastName, string phone, string email)
+        public void CreateClient(string first, string last, string phone, string email)
         {
-            if (string.IsNullOrWhiteSpace(firstName))
-                throw new ArgumentException("First name is required.");
-
-            if (string.IsNullOrWhiteSpace(lastName))
-                throw new ArgumentException("Last name is required.");
-
-            if (string.IsNullOrWhiteSpace(phone))
-                throw new ArgumentException("Phone number is required.");
-
-            if (string.IsNullOrWhiteSpace(email))
-                throw new ArgumentException("Email is required.");
-
-            var client = new Client
-            {
-                FirstName = firstName,
-                LastName = lastName,
-                PhoneNumber = phone,
-                Email = email
-            };
-
+            var client = new Client(first, last, phone, email);
             _clientRepository.Add(client);
         }
 
