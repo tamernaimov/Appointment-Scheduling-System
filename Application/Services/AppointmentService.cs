@@ -19,6 +19,14 @@ namespace Appointment_Scheduling_System.Application.Services
 
         public void CreateAppointment(Appointment appointment)
         {
+            if (appointment.StartTime >= appointment.EndTime)
+            {
+                throw new Exception("Start time must be before end time.");
+            }
+            if (appointment.StartTime < DateTime.Now)
+            {
+                throw new Exception("Appointment cannot be in the past.");
+            }
             var schedule = _scheduleRepository
                 .GetAll()
                 .FirstOrDefault(s =>
@@ -83,6 +91,11 @@ namespace Appointment_Scheduling_System.Application.Services
             if (appointment == null)
                 return;
 
+            if (appointment.Status == AppointmentStatus.Cancelled)
+            {
+                throw new Exception("Cancelled appointments cannot be completed.");
+            }
+
             appointment.Status = AppointmentStatus.Completed;
 
             _appointmentRepository.Update(appointment);
@@ -116,6 +129,12 @@ namespace Appointment_Scheduling_System.Application.Services
 
             if (appointment == null)
                 return;
+
+            if (appointment.Status == AppointmentStatus.Cancelled)
+            {
+                throw new Exception("Cancelled appointments cannot be marked as NoShow.");
+                //may need a return
+            }
 
             appointment.Status = AppointmentStatus.NoShow;
 

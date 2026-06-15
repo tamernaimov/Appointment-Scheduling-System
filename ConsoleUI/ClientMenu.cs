@@ -1,5 +1,6 @@
 ﻿using Appointment_Scheduling_System.Application.Services;
 using Appointment_Scheduling_System.Domain.Entities;
+using Azure;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -80,7 +81,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
 
             //not sure
-            List();
+            List(false);
 
             Console.Write("Id: ");
             int id = int.Parse(Console.ReadLine());
@@ -112,14 +113,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.ReadKey();
         }
 
-        void List()
+        void List(bool pause = true)
         {
             foreach (var c in _clientService.GetAllClients())
             {
                 Console.WriteLine($"{c.Id} {c.FirstName} {c.LastName}");
             }
 
-            Console.ReadKey();
+            if (pause)
+                Console.ReadKey();
         }
     }
 }

@@ -58,9 +58,21 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             Console.Write("Name: ");
             string name = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                Console.WriteLine("Name required.");
+                Console.ReadKey();
+                return;
+            }
 
             Console.Write("Position: ");
             string position = Console.ReadLine();
+            if (string.IsNullOrWhiteSpace(position))
+            {
+                Console.WriteLine("Name required.");
+                Console.ReadKey();
+                return;
+            }
 
             _staffService.AddStaff(name, position);
 

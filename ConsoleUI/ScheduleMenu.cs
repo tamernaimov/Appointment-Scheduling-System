@@ -76,11 +76,25 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("End day: ");
             int endDay = int.Parse(Console.ReadLine());
 
+            if (startDay > endDay)
+            {
+                Console.WriteLine("Start day must be before End day.");
+                Console.ReadKey();
+                return;
+            }
+
             Console.Write("Start time (hh:mm): ");
             TimeSpan startTime = TimeSpan.Parse(Console.ReadLine());
 
             Console.Write("End time (hh:mm): ");
             TimeSpan endTime = TimeSpan.Parse(Console.ReadLine());
+
+            if (startTime >= endTime)
+            {
+                Console.WriteLine("Start time must be before End time.");
+                Console.ReadKey();
+                return;
+            }
 
             for (int day = startDay; day <= endDay; day++)
             {

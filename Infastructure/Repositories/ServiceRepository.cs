@@ -1,7 +1,6 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Domain.Entities;
 using Appointment_Scheduling_System.Infrastructure.Persistence;
-using Appointment_Scheduling_System.Infrastructure.Data;
 
 namespace Appointment_Scheduling_System.Infrastructure.Repositories
 {
