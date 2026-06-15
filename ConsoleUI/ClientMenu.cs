@@ -6,9 +6,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ClientMenu
     {
-        private readonly ClientService _clientService;
+        private readonly IClientService _clientService;
 
-        public ClientMenu(ClientService clientService)
+        public ClientMenu(IClientService clientService)
         {
             _clientService = clientService;
         }
