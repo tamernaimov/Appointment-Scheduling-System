@@ -1,11 +1,12 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
-using Appointment_Scheduling_System.Application.Services;
+using Appointment_Scheduling_System.Domain.Enums;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
     public class ReportMenu
     {
         private readonly IReportService _reportService;
+
         public ReportMenu(IReportService reportService)
         {
             _reportService = reportService;
@@ -16,16 +17,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
-                Console.ForegroundColor = ConsoleColor.DarkCyan;
-
-                Console.WriteLine("==================================================");
-                Console.WriteLine("                    REPORTS");
-                Console.WriteLine("==================================================");
-
-                Console.ResetColor();
-
-                Console.WriteLine();
+                Header("REPORTS");
 
                 Console.WriteLine("[1] Daily Schedule");
                 Console.WriteLine("[2] Weekly Schedule");
@@ -35,182 +27,230 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 Console.WriteLine("[6] Most Booked Services");
                 Console.WriteLine("[7] Revenue Report");
                 Console.WriteLine("[8] Cancelled / NoShow Stats");
-
-                Console.WriteLine();
                 Console.WriteLine("[0] Back");
 
-                Console.WriteLine();
-                Console.Write("Choose option: ");
-                var choice = Console.ReadLine();
-                switch (choice) { 
-                case "1":
-                    DailySchedule();
-                    break;
+                Console.Write("\nSelect: ");
 
-                case "2":
-                    WeeklySchedule();
-                    break;
-
-                case "3":
-                    ByStatus();
-                    break;
-
-                case "4":
-                    ClientHistory();
-                    break;
-
-                case "5":
-                    StaffWorkload();
-                    break;
-
-                case "6":
-                    MostBookedServices();
-                    break;
-
-                case "7":
-                    Revenue();
-                    break;
-
-                case "8":
-                    Stats();
-                    break;
+                switch (Console.ReadLine())
+                {
+                    case "1": DailySchedule(); break;
+                    case "2": WeeklySchedule(); break;
+                    case "3": ByStatus(); break;
+                    case "4": ClientHistory(); break;
+                    case "5": StaffWorkload(); break;
+                    case "6": MostBookedServices(); break;
+                    case "7": Revenue(); break;
+                    case "8": Stats(); break;
+                    case "0": return;
                 }
             }
         }
-        void ByDate()
+
+        private void DailySchedule()
         {
-            Console.Write("Date (yyyy-mm-dd): ");
-            var date = DateTime.Parse(Console.ReadLine());
+            Console.Clear();
+            Header("DAILY SCHEDULE");
 
-            var result = _reportService.GetAppointmentsByDate(date);
+            Console.Write("Staff Id: ");
+            if (!int.TryParse(Console.ReadLine(), out int staffId))
+            {
+                Error("Invalid Staff Id");
+                return;
+            }
 
-            foreach (var a in result)
-                Console.WriteLine($"{a.Id} | {a.StartTime} | {a.Status}");
+            Console.Write("Date: ");
+            if (!DateTime.TryParse(Console.ReadLine(), out var date))
+            {
+                Error("Invalid Date");
+                return;
+            }
 
-            Console.ReadKey();
+            var appointments = _reportService.GetDailySchedule(staffId, date);
+
+            Console.WriteLine("\nAppointments:");
+            foreach (var a in appointments)
+                Console.WriteLine($"{a.StartTime:HH:mm} - {a.EndTime:HH:mm}");
+
+            Pause();
         }
 
-        void ByStatus()
+        private void WeeklySchedule()
         {
+            Console.Clear();
+            Header("WEEKLY SCHEDULE");
+
+            Console.Write("Service Id: ");
+            if (!int.TryParse(Console.ReadLine(), out int serviceId))
+            {
+                Error("Invalid Service Id");
+                return;
+            }
+
+            Console.Write("Week Start Date: ");
+            if (!DateTime.TryParse(Console.ReadLine(), out var start))
+            {
+                Error("Invalid Date");
+                return;
+            }
+
+            var appointments = _reportService.GetWeeklySchedule(serviceId, start);
+
+            Console.WriteLine("\nAppointments:");
+            foreach (var a in appointments)
+                Console.WriteLine($"{a.StartTime:dd/MM HH:mm} | Staff {a.StaffId}");
+
+            Pause();
+        }
+
+        private void ByStatus()
+        {
+            Console.Clear();
+            Header("APPOINTMENTS BY STATUS");
+
             Console.Write("Status (Scheduled/Completed/Cancelled/NoShow): ");
-            var status = Enum.Parse<Domain.Enums.AppointmentStatus>(Console.ReadLine());
+            var input = Console.ReadLine();
+
+            if (!Enum.TryParse<AppointmentStatus>(input, out var status))
+            {
+                Error("Invalid Status");
+                return;
+            }
 
             var result = _reportService.GetAppointmentsByStatus(status);
 
+            Console.WriteLine("\nResults:");
             foreach (var a in result)
                 Console.WriteLine($"{a.Id} | {a.Status}");
 
-            Console.ReadKey();
+            Pause();
         }
 
-        void ClientHistory()
+        private void ClientHistory()
         {
-            Console.Write("Client ID: ");
-            int id = int.Parse(Console.ReadLine());
+            Console.Clear();
+            Header("CLIENT HISTORY");
+
+            Console.Write("Client Id: ");
+            if (!int.TryParse(Console.ReadLine(), out int id))
+            {
+                Error("Invalid Client Id");
+                return;
+            }
 
             var result = _reportService.GetClientHistory(id);
 
+            Console.WriteLine("\nHistory:");
             foreach (var a in result)
-                Console.WriteLine($"{a.Id} | {a.StartTime} | {a.Status}");
+                Console.WriteLine($"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}");
 
-            Console.ReadKey();
+            Pause();
         }
-        void Revenue()
-        {
-            Console.Write("Start date: ");
-            var start = DateTime.Parse(Console.ReadLine());
 
-            Console.Write("End date: ");
-            var end = DateTime.Parse(Console.ReadLine());
+        private void StaffWorkload()
+        {
+            Console.Clear();
+            Header("STAFF WORKLOAD");
+
+            Console.Write("Staff Id: ");
+            if (!int.TryParse(Console.ReadLine(), out int staffId))
+            {
+                Error("Invalid Staff Id");
+                return;
+            }
+
+            Console.Write("Start Date: ");
+            if (!DateTime.TryParse(Console.ReadLine(), out var start))
+            {
+                Error("Invalid Date");
+                return;
+            }
+
+            Console.Write("End Date: ");
+            if (!DateTime.TryParse(Console.ReadLine(), out var end))
+            {
+                Error("Invalid Date");
+                return;
+            }
+
+            var count = _reportService.GetStaffWorkload(staffId, start, end);
+
+            Console.WriteLine($"\nTotal Appointments: {count}");
+
+            Pause();
+        }
+
+        private void MostBookedServices()
+        {
+            Console.Clear();
+            Header("MOST BOOKED SERVICES");
+
+            var services = _reportService.GetMostBookedServices();
+
+            Console.WriteLine("\nServices:");
+            foreach (var s in services)
+                Console.WriteLine($"Service {s.ServiceId} -> {s.Count}");
+
+            Pause();
+        }
+
+        private void Revenue()
+        {
+            Console.Clear();
+            Header("REVENUE REPORT");
+
+            Console.Write("Start Date: ");
+            if (!DateTime.TryParse(Console.ReadLine(), out var start))
+            {
+                Error("Invalid Date");
+                return;
+            }
+
+            Console.Write("End Date: ");
+            if (!DateTime.TryParse(Console.ReadLine(), out var end))
+            {
+                Error("Invalid Date");
+                return;
+            }
 
             var revenue = _reportService.GetRevenue(start, end);
 
-            Console.WriteLine($"Revenue: {revenue}");
+            Console.WriteLine($"\nTotal Revenue: {revenue}");
 
-            Console.ReadKey();
-        }
-        private void DailySchedule()
-        {
-            Console.Write("Staff Id: ");
-            int staffId = int.Parse(Console.ReadLine());
-
-            Console.Write("Date: ");
-            DateTime date = DateTime.Parse(Console.ReadLine());
-
-            var appointments =
-                _reportService.GetDailySchedule(staffId, date);
-
-            foreach (var a in appointments)
-            {
-                Console.WriteLine(
-                    $"{a.StartTime} - {a.EndTime}");
-            }
-
-            Console.ReadKey();
-        }
-        private void WeeklySchedule()
-        {
-            Console.Write("Service Id: ");
-            int serviceId = int.Parse(Console.ReadLine());
-
-            Console.Write("Week Start Date: ");
-            DateTime start = DateTime.Parse(Console.ReadLine());
-
-            var appointments =
-                _reportService.GetWeeklySchedule(serviceId, start);
-
-            foreach (var a in appointments)
-            {
-                Console.WriteLine(
-                    $"{a.StartTime} | Staff {a.StaffId}");
-            }
-
-            Console.ReadKey();
-        }
-        private void StaffWorkload()
-        {
-            Console.Write("Staff Id: ");
-            int staffId = int.Parse(Console.ReadLine());
-
-            Console.Write("Start Date: ");
-            DateTime start = DateTime.Parse(Console.ReadLine());
-
-            Console.Write("End Date: ");
-            DateTime end = DateTime.Parse(Console.ReadLine());
-
-            int count =
-                _reportService.GetStaffWorkload(
-                    staffId,
-                    start,
-                    end);
-
-            Console.WriteLine(
-                $"Appointments: {count}");
-
-            Console.ReadKey();
-        }
-        private void MostBookedServices()
-        {
-            var services =
-                _reportService.GetMostBookedServices();
-
-            foreach (var service in services)
-            {
-                Console.WriteLine(
-                    $"Service {service.ServiceId} -> {service.Count}");
-            }
-
-            Console.ReadKey();
+            Pause();
         }
 
-        void Stats()
+        private void Stats()
         {
+            Console.Clear();
+            Header("CANCEL / NOSHOW STATS");
+
             var stats = _reportService.GetStats();
 
-            Console.WriteLine($"Cancelled: {stats.Cancelled}");
+            Console.WriteLine($"\nCancelled: {stats.Cancelled}");
             Console.WriteLine($"NoShow: {stats.NoShow}");
 
-            Console.ReadKey();
+            Pause();
         }
+
+        // ================= UI HELPERS =================
+
+        private void Header(string title)
+        {
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine("==================================");
+            Console.WriteLine($"          {title}");
+            Console.WriteLine("==================================");
+            Console.ResetColor();
+        }
+
+        private void Error(string message)
+        {
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine($"\n✗ {message}");
+            Console.ResetColor();
+            Pause();
+        }
+
+        private void Pause() => Console.ReadKey();
     }
 }
