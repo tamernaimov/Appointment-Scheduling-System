@@ -95,14 +95,13 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
             try
             {
-                _appointmentService.CreateAppointment(new Appointment
-                {
-                    ClientId = clientId,
-                    StaffId = staffId,
-                    ServiceId = serviceId,
-                    StartTime = start,
-                    EndTime = end
-                });
+                _appointmentService.CreateAppointment(
+                    clientId,
+                    staffId,
+                    serviceId,
+                    start,
+                    end
+                );
 
                 Console.WriteLine("Appointment created.");
             }
@@ -119,29 +118,30 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             ListAllWithoutPause();
 
             Console.Write("\nAppointment Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int id))
-                return;
+            int id = int.Parse(Console.ReadLine());
 
             Console.Write("New Start: ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime start))
-                return;
+            DateTime start = DateTime.Parse(Console.ReadLine());
 
             Console.Write("New End: ");
-            if (!DateTime.TryParse(Console.ReadLine(), out DateTime end))
+            DateTime end = DateTime.Parse(Console.ReadLine());
+
+            var appointment = _appointmentService.GetAll()
+                .FirstOrDefault(a => a.Id == id);
+
+            if (appointment == null)
+            {
+                Console.WriteLine("Not found");
                 return;
+            }
 
             try
             {
-                var appointment = new Appointment
-                {
-                    Id = id,
-                    StartTime = start,
-                    EndTime = end
-                };
+                appointment.Reschedule(start, end);
 
                 _appointmentService.UpdateAppointment(appointment);
 
-                Console.WriteLine("Updated.");
+                Console.WriteLine("Updated");
             }
             catch (Exception ex)
             {
