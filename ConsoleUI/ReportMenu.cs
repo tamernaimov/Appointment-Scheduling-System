@@ -3,8 +3,10 @@ using Appointment_Scheduling_System.Domain.Enums;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
-    public class ReportMenu
+    public class ReportMenu : MenuBase
     {
+        protected override ConsoleColor AccentColor => ConsoleColor.Cyan;
+
         private readonly IReportService _reportService;
         private readonly IStaffService _staffService;
         private readonly IServiceManagementService _serviceService;
@@ -63,19 +65,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Header("DAILY SCHEDULE");
 
             var staff = _staffService.GetAllStaff();
-
-            Console.WriteLine("Select Staff:");
-            foreach (var s in staff)
-                Console.WriteLine($"{s.Id}. {s.Name} ({s.Position})");
+            PrintTable(
+                new[] { "Id", "Name", "Position" },
+                staff.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
             int staffId = ReadInt("\nStaff Id");
-
             DateTime date = ReadDate("Date (yyyy-MM-dd)");
 
             var result = _reportService.GetDailySchedule(staffId, date);
-
-            Print(result.Select(a =>
-                $"{a.StartTime:HH:mm} - {a.EndTime:HH:mm}"));
+            Print(result.Select(a => $"{a.StartTime:HH:mm} - {a.EndTime:HH:mm}"));
 
             Pause();
         }
@@ -87,19 +85,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Header("WEEKLY SCHEDULE");
 
             var services = _serviceService.GetAllServices();
-
-            Console.WriteLine("Select Service:");
-            foreach (var s in services)
-                Console.WriteLine($"{s.Id}. {s.Name}");
+            PrintTable(
+                new[] { "Id", "Name" },
+                services.Select(s => new[] { s.Id.ToString(), s.Name }));
 
             int serviceId = ReadInt("\nService Id");
-
             DateTime start = ReadDate("Week Start Date");
 
             var result = _reportService.GetWeeklySchedule(serviceId, start);
-
-            Print(result.Select(a =>
-                $"{a.StartTime:dd/MM HH:mm} | Staff {a.StaffId}"));
+            Print(result.Select(a => $"{a.StartTime:dd/MM HH:mm} | Staff {a.StaffId}"));
 
             Pause();
         }
@@ -116,9 +110,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             var status = ReadEnum<AppointmentStatus>("Status");
 
             var result = _reportService.GetAppointmentsByStatus(status);
-
-            Print(result.Select(a =>
-                $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
+            Print(result.Select(a => $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
 
             Pause();
         }
@@ -130,17 +122,14 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Header("CLIENT HISTORY");
 
             var clients = _clientService.GetAllClients();
-
-            Console.WriteLine("Select Client:");
-            foreach (var c in clients)
-                Console.WriteLine($"{c.Id}. {c.FirstName} {c.LastName}");
+            PrintTable(
+                new[] { "Id", "First Name", "Last Name" },
+                clients.Select(c => new[] { c.Id.ToString(), c.FirstName, c.LastName }));
 
             int clientId = ReadInt("\nClient Id");
 
             var result = _reportService.GetClientHistory(clientId);
-
-            Print(result.Select(a =>
-                $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
+            Print(result.Select(a => $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
 
             Pause();
         }
@@ -152,16 +141,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Header("STAFF WORKLOAD");
 
             var staff = _staffService.GetAllStaff();
-
-            foreach (var s in staff)
-                Console.WriteLine($"{s.Id}. {s.Name}");
+            PrintTable(
+                new[] { "Id", "Name" },
+                staff.Select(s => new[] { s.Id.ToString(), s.Name }));
 
             int staffId = ReadInt("\nStaff Id");
             DateTime start = ReadDate("Start Date");
             DateTime end = ReadDate("End Date");
 
             int count = _reportService.GetStaffWorkload(staffId, start, end);
-
             Console.WriteLine($"\nTotal Appointments: {count}");
 
             Pause();
@@ -174,9 +162,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Header("MOST BOOKED SERVICES");
 
             var result = _reportService.GetMostBookedServices();
-
-            foreach (var s in result)
-                Console.WriteLine($"Service {s.ServiceId} -> {s.Count}");
+            PrintTable(
+                new[] { "Service Id", "Bookings" },
+                result.Select(s => new[] { s.ServiceId.ToString(), s.Count.ToString() }));
 
             Pause();
         }
@@ -190,7 +178,6 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             DateTime end = ReadDate("End Date");
 
             var revenue = _reportService.GetRevenue(start, end);
-
             Console.WriteLine($"\nTotal Revenue: {revenue}");
 
             Pause();
@@ -209,64 +196,22 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Pause();
         }
 
-        // ================= HELPERS =================
-
-        private int ReadInt(string label)
-        {
-            while (true)
-            {
-                Console.Write($"{label}: ");
-                if (int.TryParse(Console.ReadLine(), out int v))
-                    return v;
-
-                Console.WriteLine("Invalid number.");
-            }
-        }
-
-        private DateTime ReadDate(string label)
-        {
-            while (true)
-            {
-                Console.Write($"{label}: ");
-                if (DateTime.TryParse(Console.ReadLine(), out var v))
-                    return v;
-
-                Console.WriteLine("Invalid date.");
-            }
-        }
-
-        private T ReadEnum<T>(string label) where T : struct
-        {
-            while (true)
-            {
-                Console.Write($"{label}: ");
-                if (Enum.TryParse<T>(Console.ReadLine(), true, out var v))
-                    return v;
-
-                Console.WriteLine("Invalid value.");
-            }
-        }
-
+        // ================= HELPER (специфичен само за Reports) =================
         private void Print(IEnumerable<string> lines)
         {
             Console.WriteLine();
-            foreach (var l in lines)
+            var list = lines.ToList();
+
+            if (list.Count == 0)
+            {
+                Console.WriteLine("(няма резултати)");
+                return;
+            }
+
+            foreach (var l in list)
                 Console.WriteLine(l);
-        }
 
-        private void Header(string title)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("==================================");
-            Console.WriteLine($" {title}");
-            Console.WriteLine("==================================");
-            Console.ResetColor();
-        }
-
-        private void Pause()
-        {
-            Console.WriteLine("\nPress any key...");
-            Console.ReadKey();
+            Console.WriteLine($"\nВсичко: {list.Count}");
         }
     }
 }

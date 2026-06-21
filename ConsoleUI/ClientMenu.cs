@@ -2,8 +2,10 @@
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
-    public class ClientMenu
+    public class ClientMenu : MenuBase
     {
+        protected override ConsoleColor AccentColor => ConsoleColor.Yellow;
+
         private readonly IClientService _clientService;
 
         public ClientMenu(IClientService clientService)
@@ -16,14 +18,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             while (true)
             {
                 Console.Clear();
-
                 Header("CLIENTS");
-
                 Console.WriteLine("[1] Add Client");
                 Console.WriteLine("[2] Edit Client");
                 Console.WriteLine("[3] List Clients");
                 Console.WriteLine("[0] Back");
-
                 Console.Write("\nSelect: ");
                 switch (Console.ReadLine())
                 {
@@ -39,21 +38,16 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             Console.Clear();
             Header("ADD CLIENT");
-
             Console.Write("First name: ");
             var fn = Console.ReadLine();
-
             Console.Write("Last name: ");
             var ln = Console.ReadLine();
-
             Console.Write("Phone: ");
             var ph = Console.ReadLine();
-
             Console.Write("Email: ");
             var em = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(fn) ||
-                string.IsNullOrWhiteSpace(ln))
+            if (string.IsNullOrWhiteSpace(fn) || string.IsNullOrWhiteSpace(ln))
             {
                 Error("Invalid input");
                 return;
@@ -66,7 +60,6 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Edit()
         {
             List(false);
-
             Console.Write("\nClient Id: ");
             if (!int.TryParse(Console.ReadLine(), out int id)) return;
 
@@ -79,19 +72,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
             Console.Write("First: ");
             var fn = Console.ReadLine();
-
             Console.Write("Last: ");
             var ln = Console.ReadLine();
-
             Console.Write("Phone: ");
             var ph = Console.ReadLine();
-
             Console.Write("Email: ");
             var em = Console.ReadLine();
 
             c.SetName(fn, ln);
             c.SetContact(ph, em);
-
             _clientService.UpdateClient(c);
             Success("Updated");
         }
@@ -101,37 +90,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("CLIENT LIST");
 
-            foreach (var c in _clientService.GetAllClients())
-                Console.WriteLine($"{c.Id} | {c.FirstName} {c.LastName}");
+            PrintTable(
+                new[] { "Id", "First Name", "Last Name" },
+                _clientService.GetAllClients().Select(c => new[] { c.Id.ToString(), c.FirstName, c.LastName }));
 
             if (pause) Pause();
         }
-
-        private void Header(string title)
-        {
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine("==================================");
-            Console.WriteLine($"        {title}");
-            Console.WriteLine("==================================");
-            Console.ResetColor();
-        }
-
-        private void Success(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n✓ {msg}");
-            Console.ResetColor();
-            Pause();
-        }
-
-        private void Error(string msg)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n✗ {msg}");
-            Console.ResetColor();
-            Pause();
-        }
-
-        private void Pause() => Console.ReadKey();
     }
 }

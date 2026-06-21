@@ -1,7 +1,9 @@
 ﻿using Appointment_Scheduling_System.ConsoleUI.Menus;
 
-public class MainMenu
+public class MainMenu : MenuBase
 {
+    protected override ConsoleColor AccentColor => ConsoleColor.White;
+
     private readonly ClientMenu _clients;
     private readonly StaffMenu _staff;
     private readonly ServiceMenu _services;
@@ -30,12 +32,7 @@ public class MainMenu
         while (true)
         {
             Console.Clear();
-
-            Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("==================================");
-            Console.WriteLine("  APPOINTMENT SYSTEM");
-            Console.WriteLine("==================================");
-            Console.ResetColor();
+            Header("APPOINTMENT SYSTEM");
 
             Console.WriteLine("[1] Clients");
             Console.WriteLine("[2] Services");
