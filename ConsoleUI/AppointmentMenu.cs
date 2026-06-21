@@ -83,11 +83,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             if (!int.TryParse(Console.ReadLine(), out int serviceId))
                 return;
 
-            var startPick = Pick("ИЗБОР НА НАЧАЛО");
+            var startPick = ConsoleDateTimePicker.Pick("ИЗБОР НА НАЧАЛО");
             if (startPick == null) return;
             DateTime start = startPick.Value;
 
-            var endPick = Pick("ИЗБОР НА КРАЙ", start); // тръгва от началната дата
+            var endPick = ConsoleDateTimePicker.Pick("ИЗБОР НА КРАЙ", start); // тръгва от началната дата
             if (endPick == null) return;
             DateTime end = endPick.Value;
             try
@@ -101,111 +101,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             }
         }
 
-            private enum Step { Date, Time }
-
-            public static DateTime? Pick(string title, DateTime? initial = null)
-            {
-                DateTime date = (initial ?? DateTime.Now).Date;
-                int hour = (initial ?? DateTime.Now).Hour;
-                int minute = (initial ?? DateTime.Now).Minute;
-
-                var step = Step.Date;
-                bool editingHour = true;
-
-                while (true)
-                {
-                    Draw(title, date, hour, minute, step, editingHour);
-                    var key = Console.ReadKey(true).Key;
-
-                    if (key == ConsoleKey.Escape)
-                        return null;
-
-                    if (step == Step.Date)
-                    {
-                        switch (key)
-                        {
-                            case ConsoleKey.LeftArrow: date = date.AddDays(-1); break;
-                            case ConsoleKey.RightArrow: date = date.AddDays(1); break;
-                            case ConsoleKey.UpArrow: date = date.AddDays(-7); break;
-                            case ConsoleKey.DownArrow: date = date.AddDays(7); break;
-                            case ConsoleKey.PageUp: date = date.AddMonths(-1); break;
-                            case ConsoleKey.PageDown: date = date.AddMonths(1); break;
-                            case ConsoleKey.Tab:
-                            case ConsoleKey.Enter:
-                                step = Step.Time;
-                                break;
-                        }
-                    }
-                    else // Step.Time
-                    {
-                        switch (key)
-                        {
-                            case ConsoleKey.LeftArrow:
-                            case ConsoleKey.RightArrow:
-                                editingHour = !editingHour;
-                                break;
-                            case ConsoleKey.UpArrow:
-                                if (editingHour) hour = (hour + 1) % 24;
-                                else minute = (minute + 5) % 60;
-                                break;
-                            case ConsoleKey.DownArrow:
-                                if (editingHour) hour = (hour + 23) % 24;
-                                else minute = (minute + 55) % 60;
-                                break;
-                            case ConsoleKey.Tab:
-                                step = Step.Date;
-                                break;
-                            case ConsoleKey.Enter:
-                                return date.AddHours(hour).AddMinutes(minute);
-                        }
-                    }
-                }
-            }
-        
-
-            private static void Draw(string title, DateTime cursor, int hour, int minute, Step step, bool editingHour)
-            {
-                Console.Clear();
-                Console.WriteLine(title);
-                Console.WriteLine(new string('=', title.Length));
-                Console.WriteLine();
-
-                var firstOfMonth = new DateTime(cursor.Year, cursor.Month, 1);
-                Console.WriteLine($"   {firstOfMonth:MMMM yyyy}".ToUpper());
-                Console.WriteLine(" Mo Tu We Th Fr Sa Su");
-
-                int daysInMonth = DateTime.DaysInMonth(cursor.Year, cursor.Month);
-                int startOffset = ((int)firstOfMonth.DayOfWeek + 6) % 7; // Monday = 0
-
-                var sb = new StringBuilder();
-                for (int i = 0; i < startOffset; i++)
-                    sb.Append("   ");
-
-                for (int day = 1; day <= daysInMonth; day++)
-                {
-                    string dayStr = day.ToString().PadLeft(2);
-                    bool isSelected = step == Step.Date && day == cursor.Day;
-                    sb.Append(isSelected ? $"[{dayStr}]" : $" {dayStr} ");
-
-                    if ((startOffset + day) % 7 == 0)
-                    {
-                        Console.WriteLine(sb.ToString());
-                        sb.Clear();
-                    }
-                }
-                if (sb.Length > 0)
-                    Console.WriteLine(sb.ToString());
-
-                Console.WriteLine();
-                string hourStr = step == Step.Time && editingHour ? $"[{hour:00}]" : $" {hour:00} ";
-                string minStr = step == Step.Time && !editingHour ? $"[{minute:00}]" : $" {minute:00} ";
-                Console.WriteLine($"Час:   {hourStr}:{minStr}");
-                Console.WriteLine();
-
-                Console.WriteLine(step == Step.Date
-                    ? "Стрелки = ден | PgUp/PgDn = месец | Enter/Tab = към часа | Esc = отказ"
-                    : "←/→ = час/минута | ↑/↓ = промяна | Tab = назад към дата | Enter = потвърди | Esc = отказ");
-            }
+            
         
 
         private void Edit()

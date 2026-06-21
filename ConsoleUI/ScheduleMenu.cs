@@ -2,8 +2,10 @@
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
-    public class ScheduleMenu
+    public class ScheduleMenu : MenuBase
     {
+        protected override ConsoleColor AccentColor => ConsoleColor.Cyan;
+
         private readonly IScheduleService _scheduleService;
         private readonly IStaffService _staffService;
 
@@ -42,16 +44,12 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("ADD SCHEDULE");
 
-            // ================= STAFF LIST =================
-            Console.WriteLine("=== STAFF LIST ===");
-
             var staffList = _staffService.GetAllStaff();
-
-            foreach (var s in staffList)
-                Console.WriteLine($"{s.Id} | {s.Name} | {s.Position}");
+            PrintTable(
+                new[] { "Id", "Name", "Position" },
+                staffList.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
             Console.Write("\nSelect Staff Id: ");
-
             if (!int.TryParse(Console.ReadLine(), out int staffId) ||
                 !staffList.Any(x => x.Id == staffId))
             {
@@ -59,7 +57,6 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 return;
             }
 
-            // ================= DAYS =================
             Console.WriteLine("\nDays (1-7):");
             Console.WriteLine("1 Monday");
             Console.WriteLine("2 Tuesday");
@@ -83,7 +80,6 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 return;
             }
 
-            // ================= TIME =================
             Console.Write("Start time (hh:mm): ");
             if (!TimeSpan.TryParse(Console.ReadLine(), out var startTime))
             {
@@ -126,37 +122,12 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("SCHEDULE LIST");
 
-            foreach (var s in _scheduleService.GetAllSchedules())
-                Console.WriteLine($"{s.Id} | Staff:{s.StaffId} | {s.DayOfWeek} | {s.StartTime}-{s.EndTime}");
+            PrintTable(
+                new[] { "Id", "Staff", "Day", "Start", "End" },
+                _scheduleService.GetAllSchedules().Select(s =>
+                    new[] { s.Id.ToString(), s.StaffId.ToString(), s.DayOfWeek.ToString(), s.StartTime.ToString(), s.EndTime.ToString() }));
 
             Pause();
         }
-
-        private void Header(string t)
-        {
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine("==================================");
-            Console.WriteLine($"          {t}");
-            Console.WriteLine("==================================");
-            Console.ResetColor();
-        }
-
-        private void Success(string m)
-        {
-            Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"\n✓ {m}");
-            Console.ResetColor();
-            Pause();
-        }
-
-        private void Error(string m)
-        {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"\n✗ {m}");
-            Console.ResetColor();
-            Pause();
-        }
-
-        private void Pause() => Console.ReadKey();
     }
 }
