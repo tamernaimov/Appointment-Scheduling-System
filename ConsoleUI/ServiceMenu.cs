@@ -12,7 +12,6 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             _serviceService = serviceService;
         }
-
         public void Show()
         {
             while (true)
