@@ -46,12 +46,12 @@ public class MainMenu : MenuBase
 
             switch (Console.ReadLine())
             {
-                case "1": Safe(() => _clients.Show()); break;
-                case "2": Safe(() => _services.Show()); break;
-                case "3": Safe(() => _staff.Show()); break;
-                case "4": Safe(() => _appointments.Show()); break;
-                case "5": Safe(() => _reports.Show()); break;
-                case "6": Safe(() => _schedule.Show()); break;
+                case "1": _clients.Show(); break;
+                case "2": _services.Show(); break;
+                case "3": _staff.Show(); break;
+                case "4": _appointments.Show(); break;
+                case "5": _reports.Show(); break;
+                case "6": _schedule.Show(); break;
                 case "0": return;
             }
         }

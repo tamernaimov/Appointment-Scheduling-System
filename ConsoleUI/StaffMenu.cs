@@ -47,7 +47,8 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 return;
             }
 
-            TryRun(() => _staffService.AddStaff(name, pos), "Staff added");
+            _staffService.AddStaff(name, pos);
+            Success("Staff added");
         }
 
         private void List()

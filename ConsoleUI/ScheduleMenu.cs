@@ -100,12 +100,21 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 return;
             }
 
-            TryRun(() => _scheduleService.AddScheduleRange(
-                staffId,
-                startDay,
-                endDay,
-                startTime,
-                endTime), "Schedule added successfully");
+            try
+            {
+                _scheduleService.AddScheduleRange(
+                    staffId,
+                    startDay,
+                    endDay,
+                    startTime,
+                    endTime);
+
+                Success("Schedule added successfully");
+            }
+            catch (Exception ex)
+            {
+                Error(ex.Message);
+            }
         }
 
         private void List()

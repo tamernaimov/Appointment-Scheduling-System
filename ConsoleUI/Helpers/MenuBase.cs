@@ -93,45 +93,6 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         }
 
         /// <summary>
-        /// Изпълнява действие (create/update/report и т.н.) и прихваща всяко изключение,
-        /// идващо от service/domain слоя - вместо да гръмне цялото приложение.
-        /// При успех показва зелено съобщение (ако е подадено) или просто пауза;
-        /// при грешка показва червено съобщение с текста на изключението.
-        /// </summary>
-        protected void TryRun(Action action, string successMessage = null)
-        {
-            try
-            {
-                action();
-                if (successMessage != null)
-                    Success(successMessage);
-                else
-                    Pause();
-            }
-            catch (Exception ex)
-            {
-                Error(ex.Message);
-            }
-        }
-
-        /// <summary>
-        /// По-лек вариант на TryRun - само прихваща и показва грешка, без авто-пауза при успех.
-        /// Подходящ за обвиване на цели под-менюта (напр. в MainMenu), за да не позволи
-        /// изключение оттам да катастрофира цялата конзолна програма.
-        /// </summary>
-        protected void Safe(Action action)
-        {
-            try
-            {
-                action();
-            }
-            catch (Exception ex)
-            {
-                Error(ex.Message);
-            }
-        }
-
-        /// <summary>
         /// Подравнена таблица - вместо "Id | Name", колоните се подравняват според
         /// най-дългия ред, плюс брой записи накрая.
         /// </summary>
