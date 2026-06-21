@@ -72,10 +72,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             int staffId = ReadInt("\nStaff Id");
             DateTime date = ReadDate("Date (yyyy-MM-dd)");
 
-            var result = _reportService.GetDailySchedule(staffId, date);
-            Print(result.Select(a => $"{a.StartTime:HH:mm} - {a.EndTime:HH:mm}"));
-
-            Pause();
+            TryRun(() =>
+            {
+                var result = _reportService.GetDailySchedule(staffId, date);
+                Print(result.Select(a => $"{a.StartTime:HH:mm} - {a.EndTime:HH:mm}"));
+            });
         }
 
         // ================= WEEKLY =================
@@ -92,10 +93,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             int serviceId = ReadInt("\nService Id");
             DateTime start = ReadDate("Week Start Date");
 
-            var result = _reportService.GetWeeklySchedule(serviceId, start);
-            Print(result.Select(a => $"{a.StartTime:dd/MM HH:mm} | Staff {a.StaffId}"));
-
-            Pause();
+            TryRun(() =>
+            {
+                var result = _reportService.GetWeeklySchedule(serviceId, start);
+                Print(result.Select(a => $"{a.StartTime:dd/MM HH:mm} | Staff {a.StaffId}"));
+            });
         }
 
         // ================= STATUS =================
@@ -109,10 +111,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
             var status = ReadEnum<AppointmentStatus>("Status");
 
-            var result = _reportService.GetAppointmentsByStatus(status);
-            Print(result.Select(a => $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
-
-            Pause();
+            TryRun(() =>
+            {
+                var result = _reportService.GetAppointmentsByStatus(status);
+                Print(result.Select(a => $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
+            });
         }
 
         // ================= CLIENT HISTORY =================
@@ -128,10 +131,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
             int clientId = ReadInt("\nClient Id");
 
-            var result = _reportService.GetClientHistory(clientId);
-            Print(result.Select(a => $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
-
-            Pause();
+            TryRun(() =>
+            {
+                var result = _reportService.GetClientHistory(clientId);
+                Print(result.Select(a => $"{a.Id} | {a.StartTime:dd/MM HH:mm} | {a.Status}"));
+            });
         }
 
         // ================= STAFF WORKLOAD =================
@@ -149,10 +153,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             DateTime start = ReadDate("Start Date");
             DateTime end = ReadDate("End Date");
 
-            int count = _reportService.GetStaffWorkload(staffId, start, end);
-            Console.WriteLine($"\nTotal Appointments: {count}");
-
-            Pause();
+            TryRun(() =>
+            {
+                int count = _reportService.GetStaffWorkload(staffId, start, end);
+                Console.WriteLine($"\nTotal Appointments: {count}");
+            });
         }
 
         // ================= OTHERS =================
@@ -161,12 +166,13 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("MOST BOOKED SERVICES");
 
-            var result = _reportService.GetMostBookedServices();
-            PrintTable(
-                new[] { "Service Id", "Bookings" },
-                result.Select(s => new[] { s.ServiceId.ToString(), s.Count.ToString() }));
-
-            Pause();
+            TryRun(() =>
+            {
+                var result = _reportService.GetMostBookedServices();
+                PrintTable(
+                    new[] { "Service Id", "Bookings" },
+                    result.Select(s => new[] { s.ServiceId.ToString(), s.Count.ToString() }));
+            });
         }
 
         private void Revenue()
@@ -177,10 +183,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             DateTime start = ReadDate("Start Date");
             DateTime end = ReadDate("End Date");
 
-            var revenue = _reportService.GetRevenue(start, end);
-            Console.WriteLine($"\nTotal Revenue: {revenue}");
-
-            Pause();
+            TryRun(() =>
+            {
+                var revenue = _reportService.GetRevenue(start, end);
+                Console.WriteLine($"\nTotal Revenue: {revenue}");
+            });
         }
 
         private void Stats()
@@ -188,12 +195,12 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("CANCEL / NOSHOW STATS");
 
-            var stats = _reportService.GetStats();
-
-            Console.WriteLine($"Cancelled: {stats.Cancelled}");
-            Console.WriteLine($"NoShow: {stats.NoShow}");
-
-            Pause();
+            TryRun(() =>
+            {
+                var stats = _reportService.GetStats();
+                Console.WriteLine($"Cancelled: {stats.Cancelled}");
+                Console.WriteLine($"NoShow: {stats.NoShow}");
+            });
         }
 
         // ================= HELPER (специфичен само за Reports) =================

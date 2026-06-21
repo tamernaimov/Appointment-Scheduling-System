@@ -53,8 +53,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 return;
             }
 
-            _clientService.CreateClient(fn, ln, ph, em);
-            Success("Client created");
+            TryRun(() => _clientService.CreateClient(fn, ln, ph, em), "Client created");
         }
 
         private void Edit()
@@ -79,10 +78,12 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("Email: ");
             var em = Console.ReadLine();
 
-            c.SetName(fn, ln);
-            c.SetContact(ph, em);
-            _clientService.UpdateClient(c);
-            Success("Updated");
+            TryRun(() =>
+            {
+                c.SetName(fn, ln);
+                c.SetContact(ph, em);
+                _clientService.UpdateClient(c);
+            }, "Updated");
         }
 
         private void List(bool pause = true)

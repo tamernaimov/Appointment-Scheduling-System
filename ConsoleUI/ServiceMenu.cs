@@ -52,8 +52,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 return;
             }
 
-            _serviceService.AddService(name, dur, price);
-            Success("Service added");
+            TryRun(() => _serviceService.AddService(name, dur, price), "Service added");
         }
 
         private void List()
