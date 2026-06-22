@@ -1,16 +1,13 @@
 ﻿using Appointment_Scheduling_System.Domain.Entities;
 
-public interface IClientService
+namespace Appointment_Scheduling_System.Application.Interfaces
 {
-    void CreateClient(
-        string firstName,
-        string lastName,
-        string phone,
-        string email);
-
-    List<Client> GetAllClients();
-
-    Client GetClient(int id);
-
-    void UpdateClient(Client client);
+    public interface IClientService
+    {
+        void CreateClient(string first, string last, string phone, string email);
+        List<Client> GetAllClients();
+        Client GetClient(int id);
+        void UpdateClient(Client client);
+        void DeleteClient(int id);
+    }
 }

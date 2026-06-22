@@ -62,6 +62,13 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.ReadKey(true);
         }
 
+        /// <summary>Да/Не въпрос - за потвърждение преди изтриване или друго рисково действие.</summary>
+        protected bool Confirm(string question)
+        {
+            Console.Write($"{question} (y/n): ");
+            return Console.ReadLine()?.Trim().ToLower() == "y";
+        }
+
         protected int ReadInt(string label, Func<int, bool> isValid = null, string errorMessage = null)
         {
             while (true)

@@ -35,5 +35,14 @@ namespace Appointment_Scheduling_System.Infrastructure.Repositories
             _context.Clients.Update(client);
             _context.SaveChanges();
         }
+
+        public void Delete(int id)
+        {
+            var client = _context.Clients.FirstOrDefault(x => x.Id == id);
+            if (client == null) return;
+
+            _context.Clients.Remove(client);
+            _context.SaveChanges();
+        }
     }
 }

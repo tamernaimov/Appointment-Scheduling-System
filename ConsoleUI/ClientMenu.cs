@@ -22,6 +22,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 Console.WriteLine("[1] Add Client");
                 Console.WriteLine("[2] Edit Client");
                 Console.WriteLine("[3] List Clients");
+                Console.WriteLine("[4] Delete Client");
                 Console.WriteLine("[0] Back");
                 Console.Write("\nSelect: ");
                 switch (Console.ReadLine())
@@ -29,6 +30,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                     case "1": Add(); break;
                     case "2": Edit(); break;
                     case "3": List(); break;
+                    case "4": Delete(); break;
                     case "0": return;
                 }
             }
@@ -78,6 +80,25 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 _clientService.GetAllClients().Select(c => new[] { c.Id.ToString(), c.FirstName, c.LastName }));
 
             if (pause) Pause();
+        }
+
+        private void Delete()
+        {
+            List(false);
+            var clients = _clientService.GetAllClients();
+            if (clients.Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("\nClient Id", cid => clients.Any(x => x.Id == cid), "Няма клиент с такъв Id.");
+            var c = clients.First(x => x.Id == id);
+
+            if (!Confirm($"\nИзтрий {c.FirstName} {c.LastName}?"))
+                return;
+
+            TryRun(() => _clientService.DeleteClient(id), "Client deleted");
         }
     }
 }

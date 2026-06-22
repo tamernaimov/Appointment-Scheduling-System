@@ -32,5 +32,10 @@ namespace Appointment_Scheduling_System.Application.Services
         {
             _clientRepository.Update(client);
         }
+
+        public void DeleteClient(int id)
+        {
+            _clientRepository.Delete(id);
+        }
     }
 }
