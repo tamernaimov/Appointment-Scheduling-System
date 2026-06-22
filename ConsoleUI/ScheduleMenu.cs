@@ -49,13 +49,10 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 new[] { "Id", "Name", "Position" },
                 staffList.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
-            Console.Write("\nSelect Staff Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int staffId) ||
-                !staffList.Any(x => x.Id == staffId))
-            {
-                Error("Invalid Staff Id");
-                return;
-            }
+            Console.Write("\n");
+            int staffId = ReadInt("Select Staff Id",
+                id => staffList.Any(x => x.Id == id),
+                "Няма служител с такъв Id.");
 
             Console.WriteLine("\nDays (1-7):");
             Console.WriteLine("1 Monday");
@@ -66,39 +63,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.WriteLine("6 Saturday");
             Console.WriteLine("7 Sunday");
 
-            Console.Write("Start day: ");
-            if (!int.TryParse(Console.ReadLine(), out int startDay) || startDay < 1 || startDay > 7)
-            {
-                Error("Invalid start day");
-                return;
-            }
+            int startDay = ReadInt("Start day", d => d >= 1 && d <= 7, "Денят трябва да е между 1 и 7.");
+            int endDay = ReadInt("End day",
+                d => d >= startDay && d <= 7,
+                $"Крайният ден трябва да е между {startDay} и 7.");
 
-            Console.Write("End day: ");
-            if (!int.TryParse(Console.ReadLine(), out int endDay) || endDay < startDay || endDay > 7)
-            {
-                Error("Invalid end day");
-                return;
-            }
-
-            Console.Write("Start time (hh:mm): ");
-            if (!TimeSpan.TryParse(Console.ReadLine(), out var startTime))
-            {
-                Error("Invalid start time");
-                return;
-            }
-
-            Console.Write("End time (hh:mm): ");
-            if (!TimeSpan.TryParse(Console.ReadLine(), out var endTime))
-            {
-                Error("Invalid end time");
-                return;
-            }
-
-            if (startTime >= endTime)
-            {
-                Error("Start time must be before end time");
-                return;
-            }
+            TimeSpan startTime = ReadTimeSpan("Start time (hh:mm)");
+            TimeSpan endTime = ReadTimeSpan("End time (hh:mm)",
+                t => t > startTime,
+                "Часът на край трябва да е след началото.");
 
             TryRun(() => _scheduleService.AddScheduleRange(
                 staffId,

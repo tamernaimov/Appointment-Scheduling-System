@@ -36,16 +36,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             Console.Clear();
             Header("ADD STAFF");
-            Console.Write("Name: ");
-            var name = Console.ReadLine();
-            Console.Write("Position: ");
-            var pos = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(pos))
-            {
-                Error("Invalid input");
-                return;
-            }
+            var name = ReadRequired("Name");
+            var pos = ReadRequired("Position");
 
             TryRun(() => _staffService.AddStaff(name, pos), "Staff added");
         }

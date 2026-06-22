@@ -12,6 +12,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             _serviceService = serviceService;
         }
+
         public void Show()
         {
             while (true)
@@ -35,22 +36,10 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             Console.Clear();
             Header("ADD SERVICE");
-            Console.Write("Name: ");
-            var name = Console.ReadLine();
 
-            Console.Write("Price: ");
-            if (!decimal.TryParse(Console.ReadLine(), out var price))
-            {
-                Error("Invalid price");
-                return;
-            }
-
-            Console.Write("Duration: ");
-            if (!int.TryParse(Console.ReadLine(), out var dur))
-            {
-                Error("Invalid duration");
-                return;
-            }
+            var name = ReadRequired("Name");
+            var price = ReadDecimal("Price", p => p >= 0, "Цената не може да е отрицателна.");
+            var dur = ReadInt("Duration", d => d > 0, "Продължителността трябва да е положителна.");
 
             TryRun(() => _serviceService.AddService(name, dur, price), "Service added");
         }

@@ -69,7 +69,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 new[] { "Id", "Name", "Position" },
                 staff.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
-            int staffId = ReadInt("\nStaff Id");
+            int staffId = ReadInt("\nStaff Id", id => staff.Any(s => s.Id == id), "Няма служител с такъв Id.");
             DateTime date = ReadDate("Date (yyyy-MM-dd)");
 
             TryRun(() =>
@@ -90,7 +90,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 new[] { "Id", "Name" },
                 services.Select(s => new[] { s.Id.ToString(), s.Name }));
 
-            int serviceId = ReadInt("\nService Id");
+            int serviceId = ReadInt("\nService Id", id => services.Any(s => s.Id == id), "Няма услуга с такъв Id.");
             DateTime start = ReadDate("Week Start Date");
 
             TryRun(() =>
@@ -129,7 +129,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 new[] { "Id", "First Name", "Last Name" },
                 clients.Select(c => new[] { c.Id.ToString(), c.FirstName, c.LastName }));
 
-            int clientId = ReadInt("\nClient Id");
+            int clientId = ReadInt("\nClient Id", id => clients.Any(c => c.Id == id), "Няма клиент с такъв Id.");
 
             TryRun(() =>
             {
@@ -149,9 +149,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 new[] { "Id", "Name" },
                 staff.Select(s => new[] { s.Id.ToString(), s.Name }));
 
-            int staffId = ReadInt("\nStaff Id");
+            int staffId = ReadInt("\nStaff Id", id => staff.Any(s => s.Id == id), "Няма служител с такъв Id.");
             DateTime start = ReadDate("Start Date");
-            DateTime end = ReadDate("End Date");
+            DateTime end = ReadDate("End Date", d => d >= start, "Крайната дата трябва да е след началната.");
 
             TryRun(() =>
             {
@@ -181,7 +181,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Header("REVENUE REPORT");
 
             DateTime start = ReadDate("Start Date");
-            DateTime end = ReadDate("End Date");
+            DateTime end = ReadDate("End Date", d => d >= start, "Крайната дата трябва да е след началната.");
 
             TryRun(() =>
             {

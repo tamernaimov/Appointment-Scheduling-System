@@ -62,24 +62,67 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.ReadKey(true);
         }
 
-        protected int ReadInt(string label)
+        protected int ReadInt(string label, Func<int, bool> isValid = null, string errorMessage = null)
         {
             while (true)
             {
                 Console.Write($"{label}: ");
-                if (int.TryParse(Console.ReadLine(), out int v)) return v;
-                Warning("Невалидно число.");
+                if (int.TryParse(Console.ReadLine(), out int v) && (isValid == null || isValid(v)))
+                    return v;
+                Warning(errorMessage ?? "Невалидно число.");
             }
         }
 
-        protected DateTime ReadDate(string label)
+        protected decimal ReadDecimal(string label, Func<decimal, bool> isValid = null, string errorMessage = null)
         {
             while (true)
             {
                 Console.Write($"{label}: ");
-                if (DateTime.TryParse(Console.ReadLine(), out var v)) return v;
-                Warning("Невалидна дата.");
+                if (decimal.TryParse(Console.ReadLine(), out decimal v) && (isValid == null || isValid(v)))
+                    return v;
+                Warning(errorMessage ?? "Невалидно число.");
             }
+        }
+
+        protected DateTime ReadDate(string label, Func<DateTime, bool> isValid = null, string errorMessage = null)
+        {
+            while (true)
+            {
+                Console.Write($"{label}: ");
+                if (DateTime.TryParse(Console.ReadLine(), out var v) && (isValid == null || isValid(v)))
+                    return v;
+                Warning(errorMessage ?? "Невалидна дата.");
+            }
+        }
+
+        protected TimeSpan ReadTimeSpan(string label, Func<TimeSpan, bool> isValid = null, string errorMessage = null)
+        {
+            while (true)
+            {
+                Console.Write($"{label}: ");
+                if (TimeSpan.TryParse(Console.ReadLine(), out var v) && (isValid == null || isValid(v)))
+                    return v;
+                Warning(errorMessage ?? "Невалиден формат на час (hh:mm).");
+            }
+        }
+
+        /// <summary>Чете текст с по избор условие за валидност (напр. непразен низ, валиден имейл и т.н.).</summary>
+        protected string ReadString(string label, Func<string, bool> isValid = null, string errorMessage = null)
+        {
+            while (true)
+            {
+                Console.Write($"{label}: ");
+                var value = Console.ReadLine();
+                if (isValid == null || isValid(value))
+                    return value;
+                Warning(errorMessage ?? "Невалидна стойност.");
+            }
+        }
+
+        /// <summary>Кратък пряк път за най-честия случай - поле, което не може да е празно.</summary>
+        protected string ReadRequired(string label)
+        {
+            return ReadString(label, v => !string.IsNullOrWhiteSpace(v), "Полето не може да бъде празно.");
         }
 
         protected T ReadEnum<T>(string label) where T : struct
