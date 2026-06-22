@@ -145,6 +145,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Cancel()
         {
             Console.Clear();
+            ListAllInternal();
             Header("CANCEL APPOINTMENT");
 
             Console.Write("Appointment Id: ");
@@ -164,6 +165,8 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Complete()
         {
             Console.Clear();
+
+            ListAllInternal();
             Header("COMPLETE APPOINTMENT");
 
             Console.Write("Appointment Id: ");
@@ -183,6 +186,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void NoShow()
         {
             Console.Clear();
+            ListAllInternal();
             Header("MARK NOSHOW");
 
             Console.Write("Appointment Id: ");
