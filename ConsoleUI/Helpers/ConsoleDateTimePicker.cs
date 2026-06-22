@@ -1,25 +1,42 @@
 ﻿using System;
 using System.Text;
 
-namespace Appointment_Scheduling_System.ConsoleUI.Menus
+namespace Appointment_Scheduling_System.ConsoleUI.Helpers
 {
-   
+    /// <summary>
+    /// Интерактивен избор на дата и час в конзолата.
+    ///
+    /// Управление:
+    ///   Стрелки      - местене по дни / промяна на час и минута
+    ///   PageUp/Down  - предишен / следващ месец
+    ///   Tab или Enter- преминаване от календар към час
+    ///   Enter (в час)- потвърждаване на избора
+    ///   Esc          - отказ (връща null)
+    /// </summary>
     public static class ConsoleDateTimePicker
     {
         private enum Step { Date, Time }
 
-        public static DateTime? Pick(string title, DateTime? initial = null, DateTime? minDate = null, string contextLabel = null)
+        /// <summary>
+        /// Избор на единична дата+час.
+        /// </summary>
+        /// <param name="title">Заглавие, показва се на първия ред (напр. "НАЧАЛО НА ЧАСА").</param>
+        /// <param name="initial">От коя дата/час да тръгне курсорът (по подразбиране - сега).</param>
+        /// <param name="minDate">Ако е зададено, не позволява навигация преди тази дата.</param>
+        /// <param name="contextLabel">Допълнителен ред под заглавието, напр. "Начало: 16.07.2026 14:30".</param>
+        /// <param name="includeTime">Ако е false, спира до избора на ден - няма стъпка за час (за PickDate).</param>
+        public static DateTime? Pick(string title, DateTime? initial = null, DateTime? minDate = null, string contextLabel = null, bool includeTime = true)
         {
             DateTime date = (initial ?? DateTime.Now).Date;
-            int hour = (initial ?? DateTime.Now).Hour;
-            int minute = (initial ?? DateTime.Now).Minute;
+            int hour = includeTime ? (initial ?? DateTime.Now).Hour : 0;
+            int minute = includeTime ? (initial ?? DateTime.Now).Minute : 0;
 
             var step = Step.Date;
             bool editingHour = true;
 
             while (true)
             {
-                Draw(title, contextLabel, date, hour, minute, step, editingHour);
+                Draw(title, contextLabel, date, hour, minute, step, editingHour, includeTime);
                 var key = Console.ReadKey(true).Key;
 
                 if (key == ConsoleKey.Escape)
@@ -38,16 +55,25 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                         case ConsoleKey.PageDown: newDate = date.AddMonths(1); break;
                         case ConsoleKey.Tab:
                         case ConsoleKey.Enter:
-                            step = Step.Time;
+                            if (includeTime)
+                            {
+                                step = Step.Time;
+                            }
+                            else
+                            {
+                                if (minDate.HasValue && newDate < minDate.Value.Date)
+                                    newDate = minDate.Value.Date;
+                                return newDate; // date-only режим - Enter веднага потвърждава деня
+                            }
                             break;
                     }
 
                     if (minDate.HasValue && newDate < minDate.Value.Date)
-                        newDate = minDate.Value.Date;
+                        newDate = minDate.Value.Date; // не позволява да се мине преди минималната дата
 
                     date = newDate;
                 }
-                else
+                else // Step.Time
                 {
                     switch (key)
                     {
@@ -72,6 +98,14 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 }
             }
         }
+
+        /// <summary>
+        /// Избор на период (начало + край) с ЕДИН извикване.
+        /// - Краят автоматично тръгва от датата на началото (не от януари).
+        /// - Показва "Начало: ..." докато избираш края, за контекст.
+        /// - Не позволява край преди/равен на началото - ако стане, пита отново само за края.
+        /// Връща null ако потребителят откаже (Esc) на някоя от двете стъпки.
+        /// </summary>
         public static (DateTime Start, DateTime End)? PickRange(
             string startTitle = "НАЧАЛО",
             string endTitle = "КРАЙ",
@@ -94,7 +128,40 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             }
         }
 
-        private static void Draw(string title, string contextLabel, DateTime cursor, int hour, int minute, Step step, bool editingHour)
+        /// <summary>
+        /// Избор само на дата (без час) - за отчети, филтри и т.н., където часът няма значение.
+        /// </summary>
+        public static DateTime? PickDate(string title, DateTime? initial = null, DateTime? minDate = null, string contextLabel = null)
+            => Pick(title, initial, minDate, contextLabel, includeTime: false);
+
+        /// <summary>
+        /// Избор на период от дати (начало + край), без час - напр. за отчети.
+        /// Краят тръгва от датата на началото и не позволява край преди началото
+        /// (но позволява край = начало, т.е. период от 1 ден).
+        /// </summary>
+        public static (DateTime Start, DateTime End)? PickDateRange(
+            string startTitle = "НАЧАЛНА ДАТА",
+            string endTitle = "КРАЙНА ДАТА",
+            DateTime? initialStart = null)
+        {
+            var start = PickDate(startTitle, initialStart);
+            if (start == null) return null;
+
+            while (true)
+            {
+                string context = $"Начало: {start.Value:dd.MM.yyyy}";
+                var end = PickDate(endTitle, start, minDate: start.Value.Date, contextLabel: context);
+                if (end == null) return null;
+
+                if (end.Value >= start.Value)
+                    return (start.Value, end.Value);
+
+                Console.WriteLine("\nКраят трябва да е след или равен на началото. Натисни клавиш, за да опиташ пак...");
+                Console.ReadKey(true);
+            }
+        }
+
+        private static void Draw(string title, string contextLabel, DateTime cursor, int hour, int minute, Step step, bool editingHour, bool includeTime)
         {
             Console.Clear();
             Console.WriteLine(title);
@@ -130,14 +197,22 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 Console.WriteLine(sb.ToString());
 
             Console.WriteLine();
-            string hourStr = step == Step.Time && editingHour ? $"[{hour:00}]" : $" {hour:00} ";
-            string minStr = step == Step.Time && !editingHour ? $"[{minute:00}]" : $" {minute:00} ";
-            Console.WriteLine($"Час:   {hourStr}:{minStr}");
-            Console.WriteLine();
 
-            Console.WriteLine(step == Step.Date
-                ? "Стрелки = ден | PgUp/PgDn = месец | Enter/Tab = към часа | Esc = отказ"
-                : "←/→ = час/минута | ↑/↓ = промяна | Tab = назад към дата | Enter = потвърди | Esc = отказ");
+            if (includeTime)
+            {
+                string hourStr = step == Step.Time && editingHour ? $"[{hour:00}]" : $" {hour:00} ";
+                string minStr = step == Step.Time && !editingHour ? $"[{minute:00}]" : $" {minute:00} ";
+                Console.WriteLine($"Час:   {hourStr}:{minStr}");
+                Console.WriteLine();
+
+                Console.WriteLine(step == Step.Date
+                    ? "Стрелки = ден | PgUp/PgDn = месец | Enter/Tab = към часа | Esc = отказ"
+                    : "←/→ = час/минута | ↑/↓ = промяна | Tab = назад към дата | Enter = потвърди | Esc = отказ");
+            }
+            else
+            {
+                Console.WriteLine("Стрелки = ден | PgUp/PgDn = месец | Enter = потвърди | Esc = отказ");
+            }
         }
     }
 }

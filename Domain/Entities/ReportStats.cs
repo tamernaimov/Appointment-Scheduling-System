@@ -2,7 +2,13 @@
 {
     public class ReportStats
     {
-        public int Cancelled { get; set; }
-        public int NoShow { get; set; }
+        public int Cancelled { get; }
+        public int NoShow { get; }
+
+        public ReportStats(int cancelled, int noShow)
+        {
+            Cancelled = cancelled;
+            NoShow = noShow;
+        }
     }
 }

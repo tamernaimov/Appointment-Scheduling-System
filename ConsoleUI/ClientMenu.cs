@@ -38,20 +38,11 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         {
             Console.Clear();
             Header("ADD CLIENT");
-            Console.Write("First name: ");
-            var fn = Console.ReadLine();
-            Console.Write("Last name: ");
-            var ln = Console.ReadLine();
-            Console.Write("Phone: ");
-            var ph = Console.ReadLine();
-            Console.Write("Email: ");
-            var em = Console.ReadLine();
 
-            if (string.IsNullOrWhiteSpace(fn) || string.IsNullOrWhiteSpace(ln))
-            {
-                Error("Invalid input");
-                return;
-            }
+            var fn = ReadRequired("First name");
+            var ln = ReadRequired("Last name");
+            var ph = ReadRequired("Phone");
+            var em = ReadString("Email", v => !string.IsNullOrWhiteSpace(v) && v.Contains('@'), "Невалиден имейл формат.");
 
             TryRun(() => _clientService.CreateClient(fn, ln, ph, em), "Client created");
         }
@@ -59,24 +50,15 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
         private void Edit()
         {
             List(false);
-            Console.Write("\nClient Id: ");
-            if (!int.TryParse(Console.ReadLine(), out int id)) return;
+            var clients = _clientService.GetAllClients();
 
-            var c = _clientService.GetClient(id);
-            if (c == null)
-            {
-                Error("Not found");
-                return;
-            }
+            int id = ReadInt("\nClient Id", cid => clients.Any(x => x.Id == cid), "Няма клиент с такъв Id.");
+            var c = clients.First(x => x.Id == id);
 
-            Console.Write("First: ");
-            var fn = Console.ReadLine();
-            Console.Write("Last: ");
-            var ln = Console.ReadLine();
-            Console.Write("Phone: ");
-            var ph = Console.ReadLine();
-            Console.Write("Email: ");
-            var em = Console.ReadLine();
+            var fn = ReadRequired("First");
+            var ln = ReadRequired("Last");
+            var ph = ReadRequired("Phone");
+            var em = ReadString("Email", v => !string.IsNullOrWhiteSpace(v) && v.Contains('@'), "Невалиден имейл формат.");
 
             TryRun(() =>
             {

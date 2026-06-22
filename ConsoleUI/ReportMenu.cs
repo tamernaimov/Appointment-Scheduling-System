@@ -1,4 +1,5 @@
 ﻿using Appointment_Scheduling_System.Application.Interfaces;
+using Appointment_Scheduling_System.ConsoleUI.Helpers;
 using Appointment_Scheduling_System.Domain.Enums;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
@@ -70,11 +71,13 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 staff.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
             int staffId = ReadInt("\nStaff Id", id => staff.Any(s => s.Id == id), "Няма служител с такъв Id.");
-            DateTime date = ReadDate("Date (yyyy-MM-dd)");
+
+            var date = ConsoleDateTimePicker.PickDate("ИЗБОР НА ДАТА");
+            if (date == null) return;
 
             TryRun(() =>
             {
-                var result = _reportService.GetDailySchedule(staffId, date);
+                var result = _reportService.GetDailySchedule(staffId, date.Value);
                 Print(result.Select(a => $"{a.StartTime:HH:mm} - {a.EndTime:HH:mm}"));
             });
         }
@@ -91,11 +94,13 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 services.Select(s => new[] { s.Id.ToString(), s.Name }));
 
             int serviceId = ReadInt("\nService Id", id => services.Any(s => s.Id == id), "Няма услуга с такъв Id.");
-            DateTime start = ReadDate("Week Start Date");
+
+            var start = ConsoleDateTimePicker.PickDate("НАЧАЛО НА СЕДМИЦАТА");
+            if (start == null) return;
 
             TryRun(() =>
             {
-                var result = _reportService.GetWeeklySchedule(serviceId, start);
+                var result = _reportService.GetWeeklySchedule(serviceId, start.Value);
                 Print(result.Select(a => $"{a.StartTime:dd/MM HH:mm} | Staff {a.StaffId}"));
             });
         }
@@ -150,8 +155,10 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 staff.Select(s => new[] { s.Id.ToString(), s.Name }));
 
             int staffId = ReadInt("\nStaff Id", id => staff.Any(s => s.Id == id), "Няма служител с такъв Id.");
-            DateTime start = ReadDate("Start Date");
-            DateTime end = ReadDate("End Date", d => d >= start, "Крайната дата трябва да е след началната.");
+
+            var range = ConsoleDateTimePicker.PickDateRange("НАЧАЛНА ДАТА", "КРАЙНА ДАТА");
+            if (range == null) return;
+            var (start, end) = range.Value;
 
             TryRun(() =>
             {
@@ -180,8 +187,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Clear();
             Header("REVENUE REPORT");
 
-            DateTime start = ReadDate("Start Date");
-            DateTime end = ReadDate("End Date", d => d >= start, "Крайната дата трябва да е след началната.");
+            var range = ConsoleDateTimePicker.PickDateRange("НАЧАЛНА ДАТА", "КРАЙНА ДАТА");
+            if (range == null) return;
+            var (start, end) = range.Value;
 
             TryRun(() =>
             {

@@ -4,7 +4,7 @@ using Appointment_Scheduling_System.Domain.Enums;
 
 namespace Appointment_Scheduling_System.Application.Services
 {
-    public class ReportService :IReportService
+    public class ReportService : IReportService
     {
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IServiceRepository _serviceRepository;
@@ -75,11 +75,10 @@ namespace Appointment_Scheduling_System.Application.Services
         {
             var all = _appointmentRepository.GetAll();
 
-            return new ReportStats
-            {
-                Cancelled = all.Count(a => a.Status == AppointmentStatus.Cancelled),
-                NoShow = all.Count(a => a.Status == AppointmentStatus.NoShow)
-            };
+            int cancelled = all.Count(a => a.Status == AppointmentStatus.Cancelled);
+            int noShow = all.Count(a => a.Status == AppointmentStatus.NoShow);
+
+            return new ReportStats(cancelled, noShow);
         }
         public int GetStaffWorkload(
         int staffId,
