@@ -115,11 +115,13 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             Console.Write("\nAppointment Id: ");
             if (!int.TryParse(Console.ReadLine(), out int id)) return;
 
-            Console.Write("New Start: ");
-            if (!DateTime.TryParse(Console.ReadLine(), out var start)) return;
+            var startPick = ConsoleDateTimePicker.Pick("ИЗБОР НА НАЧАЛО");
+            if (startPick == null) return;
+            DateTime start = startPick.Value;
 
-            Console.Write("New End: ");
-            if (!DateTime.TryParse(Console.ReadLine(), out var end)) return;
+            var endPick = ConsoleDateTimePicker.Pick("ИЗБОР НА НАЧАЛО");
+            if (startPick == null) return;
+            DateTime end = startPick.Value;
 
             var appointment = _appointmentService.GetAll()
                 .FirstOrDefault(a => a.Id == id);
