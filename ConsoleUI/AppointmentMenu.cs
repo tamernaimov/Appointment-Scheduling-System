@@ -120,7 +120,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             DateTime start = startPick.Value;
 
             var endPick = ConsoleDateTimePicker.Pick("ИЗБОР НА КРАЙ");
-            if (startPick == null) return;
+            if (endPick == null) return;
             DateTime end = endPick.Value;
 
             var appointment = _appointmentService.GetAll()
