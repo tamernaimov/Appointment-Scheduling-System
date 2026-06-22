@@ -119,9 +119,9 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
             if (startPick == null) return;
             DateTime start = startPick.Value;
 
-            var endPick = ConsoleDateTimePicker.Pick("ИЗБОР НА НАЧАЛО");
+            var endPick = ConsoleDateTimePicker.Pick("ИЗБОР НА КРАЙ");
             if (startPick == null) return;
-            DateTime end = startPick.Value;
+            DateTime end = endPick.Value;
 
             var appointment = _appointmentService.GetAll()
                 .FirstOrDefault(a => a.Id == id);
