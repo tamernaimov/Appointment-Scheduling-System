@@ -23,13 +23,7 @@ namespace Appointment_Scheduling_System.Application.Services
                 throw new Exception("Invalid working hours.");
             }
 
-            var schedule = new Schedule
-            {
-                StaffId = staffId,
-                DayOfWeek = dayOfWeek,
-                StartTime = startTime,
-                EndTime = endTime
-            };
+            var schedule = new Schedule(staffId, dayOfWeek, startTime, endTime);
 
             _scheduleRepository.Add(schedule);
         }
@@ -70,13 +64,7 @@ namespace Appointment_Scheduling_System.Application.Services
                 if (day == 7)
                     dayOfWeek = DayOfWeek.Sunday;
 
-                var schedule = new Schedule
-                {
-                    StaffId = staffId,
-                    DayOfWeek = dayOfWeek,
-                    StartTime = startTime,
-                    EndTime = endTime
-                };
+                var schedule = new Schedule(staffId, dayOfWeek, startTime, endTime);
 
                 _scheduleRepository.Add(schedule);
             }

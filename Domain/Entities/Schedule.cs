@@ -2,14 +2,31 @@
 {
     public class Schedule
     {
-        public int Id { get; set; }
+        public int Id { get; private set; }
+        public int StaffId { get; private set; }
+        public DayOfWeek DayOfWeek { get; private set; }
+        public TimeSpan StartTime { get; private set; }
+        public TimeSpan EndTime { get; private set; }
 
-        public int StaffId { get; set; }
+        private Schedule() { } // EF
 
-        public DayOfWeek DayOfWeek { get; set; }
+        public Schedule(int staffId, DayOfWeek dayOfWeek, TimeSpan startTime, TimeSpan endTime)
+        {
+            if (staffId <= 0)
+                throw new ArgumentException("Invalid staff id");
 
-        public TimeSpan StartTime { get; set; }
+            StaffId = staffId;
+            DayOfWeek = dayOfWeek;
+            SetTimes(startTime, endTime);
+        }
 
-        public TimeSpan EndTime { get; set; }
+        public void SetTimes(TimeSpan startTime, TimeSpan endTime)
+        {
+            if (startTime >= endTime)
+                throw new ArgumentException("Start time must be before end time");
+
+            StartTime = startTime;
+            EndTime = endTime;
+        }
     }
 }

@@ -42,18 +42,10 @@ var provider = services.BuildServiceProvider();
 
 using (var scope = provider.CreateScope())
 {
-    var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    context.Database.Migrate();
-    DbSeeder.Seed(context);
-}
-
-using (var scope = provider.CreateScope())
-{
     var scopedProvider = scope.ServiceProvider;
 
     var context = scopedProvider.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
-    DbSeeder.Seed(context);
 
     var menu = scopedProvider.GetRequiredService<MainMenu>();
     menu.Show();

@@ -23,12 +23,7 @@ namespace Appointment_Scheduling_System.Application.Services
             if (price < 0)
                 throw new ArgumentException("Price cannot be negative.");
 
-            var service = new Service
-            {
-                Name = name,
-                DurationInMinutes = duration,
-                Price = price
-            };
+            var service = new Service(name, duration, price);
 
             _serviceRepository.Add(service);
         }
