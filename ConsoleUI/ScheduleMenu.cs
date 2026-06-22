@@ -1,4 +1,5 @@
-﻿using Appointment_Scheduling_System.Application.Interfaces;
+﻿
+using Appointment_Scheduling_System.Application.Interfaces;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -26,6 +27,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
 
                 Console.WriteLine("[1] Add Working Days");
                 Console.WriteLine("[2] View Schedule");
+                Console.WriteLine("[3] Delete Schedule");
                 Console.WriteLine("[0] Back");
 
                 Console.Write("\nSelect: ");
@@ -34,6 +36,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 {
                     case "1": Add(); break;
                     case "2": List(); break;
+                    case "3": Delete(); break;
                     case "0": return;
                 }
             }
@@ -49,8 +52,7 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 new[] { "Id", "Name", "Position" },
                 staffList.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
-            Console.Write("\n");
-            int staffId = ReadInt("Select Staff Id",
+            int staffId = ReadInt("\nSelect Staff Id",
                 id => staffList.Any(x => x.Id == id),
                 "Няма служител с такъв Id.");
 
@@ -92,6 +94,31 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                     new[] { s.Id.ToString(), s.StaffId.ToString(), s.DayOfWeek.ToString(), s.StartTime.ToString(), s.EndTime.ToString() }));
 
             Pause();
+        }
+
+        private void Delete()
+        {
+            Console.Clear();
+            Header("DELETE SCHEDULE");
+
+            var schedules = _scheduleService.GetAllSchedules();
+            PrintTable(
+                new[] { "Id", "Staff", "Day", "Start", "End" },
+                schedules.Select(s => new[] { s.Id.ToString(), s.StaffId.ToString(), s.DayOfWeek.ToString(), s.StartTime.ToString(), s.EndTime.ToString() }));
+
+            if (schedules.Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("\nSchedule Id", sid => schedules.Any(x => x.Id == sid), "Няма график с такъв Id.");
+            var s = schedules.First(x => x.Id == id);
+
+            if (!Confirm($"\nИзтрий графика - Staff {s.StaffId}, {s.DayOfWeek}?"))
+                return;
+
+            TryRun(() => _scheduleService.DeleteSchedule(id), "Schedule deleted");
         }
     }
 }

@@ -1,3 +1,4 @@
+
 using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Domain.Entities;
 using Appointment_Scheduling_System.Domain.Enums;
@@ -88,6 +89,14 @@ namespace Appointment_Scheduling_System.Application.Services
             appointment.MarkNoShow();
 
             _appointmentRepository.Update(appointment);
+        }
+
+        // ================= DELETE =================
+        public void DeleteAppointment(int id)
+        {
+            GetOrThrow(id);
+
+            _appointmentRepository.Delete(id);
         }
 
         // ================= HELPERS =================

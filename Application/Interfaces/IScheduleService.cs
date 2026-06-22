@@ -19,5 +19,8 @@ namespace Appointment_Scheduling_System.Application.Interfaces
             int endDay,
             TimeSpan startTime,
             TimeSpan endTime);
+
+        void DeleteSchedule(int id);
+
     }
 }

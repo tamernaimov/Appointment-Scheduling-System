@@ -16,15 +16,12 @@ namespace Appointment_Scheduling_System.Application.Services
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentException("Name is required.");
-
             if (duration <= 0)
                 throw new ArgumentException("Duration must be positive.");
-
             if (price < 0)
                 throw new ArgumentException("Price cannot be negative.");
 
             var service = new Service(name, duration, price);
-
             _serviceRepository.Add(service);
         }
 
@@ -36,6 +33,11 @@ namespace Appointment_Scheduling_System.Application.Services
         public Service GetService(int id)
         {
             return _serviceRepository.GetById(id);
+        }
+
+        public void DeleteService(int id)
+        {
+            _serviceRepository.Delete(id);
         }
     }
 }

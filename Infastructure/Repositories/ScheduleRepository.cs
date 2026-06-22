@@ -23,5 +23,14 @@ namespace Appointment_Scheduling_System.Infrastructure.Repositories
         {
             return _context.Schedules.ToList();
         }
+
+        public void Delete(int id)
+        {
+            var schedule = _context.Schedules.FirstOrDefault(x => x.Id == id);
+            if (schedule == null) return;
+
+            _context.Schedules.Remove(schedule);
+            _context.SaveChanges();
+        }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Appointment_Scheduling_System.Application.Interfaces;
+﻿
+using Appointment_Scheduling_System.Application.Interfaces;
 
 namespace Appointment_Scheduling_System.ConsoleUI.Menus
 {
@@ -21,12 +22,14 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 Header("STAFF");
                 Console.WriteLine("[1] Add Staff");
                 Console.WriteLine("[2] List Staff");
+                Console.WriteLine("[3] Delete Staff");
                 Console.WriteLine("[0] Back");
                 Console.Write("\nSelect: ");
                 switch (Console.ReadLine())
                 {
                     case "1": Add(); break;
                     case "2": List(); break;
+                    case "3": Delete(); break;
                     case "0": return;
                 }
             }
@@ -53,6 +56,31 @@ namespace Appointment_Scheduling_System.ConsoleUI.Menus
                 _staffService.GetAllStaff().Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
 
             Pause();
+        }
+
+        private void Delete()
+        {
+            Console.Clear();
+            Header("DELETE STAFF");
+
+            var staff = _staffService.GetAllStaff();
+            PrintTable(
+                new[] { "Id", "Name", "Position" },
+                staff.Select(s => new[] { s.Id.ToString(), s.Name, s.Position }));
+
+            if (staff.Count == 0)
+            {
+                Pause();
+                return;
+            }
+
+            int id = ReadInt("\nStaff Id", sid => staff.Any(x => x.Id == sid), "Няма служител с такъв Id.");
+            var s = staff.First(x => x.Id == id);
+
+            if (!Confirm($"\nИзтрий {s.Name}?"))
+                return;
+
+            TryRun(() => _staffService.DeleteStaff(id), "Staff deleted");
         }
     }
 }

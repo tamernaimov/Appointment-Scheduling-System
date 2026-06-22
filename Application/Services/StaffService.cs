@@ -1,4 +1,5 @@
-﻿using Appointment_Scheduling_System.Application.Interfaces;
+﻿
+using Appointment_Scheduling_System.Application.Interfaces;
 using Appointment_Scheduling_System.Domain.Entities;
 
 namespace Appointment_Scheduling_System.Application.Services
@@ -26,6 +27,11 @@ namespace Appointment_Scheduling_System.Application.Services
         public Staff GetStaff(int id)
         {
             return _staffRepository.GetById(id);
+        }
+
+        public void DeleteStaff(int id)
+        {
+            _staffRepository.Delete(id);
         }
     }
 }

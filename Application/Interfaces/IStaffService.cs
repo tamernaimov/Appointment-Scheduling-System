@@ -9,5 +9,6 @@ namespace Appointment_Scheduling_System.Application.Interfaces
         List<Staff> GetAllStaff();
 
         Staff GetStaff(int id);
+        void DeleteStaff(int id);
     }
 }

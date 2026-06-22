@@ -1,4 +1,4 @@
-﻿using Appointment_Scheduling_System.Application.Interfaces;
+﻿
 using Appointment_Scheduling_System.Domain.Entities;
 using Appointment_Scheduling_System.Infrastructure.Persistence;
 
@@ -27,6 +27,15 @@ namespace Appointment_Scheduling_System.Infrastructure.Repositories
         public Staff GetById(int id)
         {
             return _context.Staff.FirstOrDefault(x => x.Id == id);
+        }
+
+        public void Delete(int id)
+        {
+            var staff = _context.Staff.FirstOrDefault(x => x.Id == id);
+            if (staff == null) return;
+
+            _context.Staff.Remove(staff);
+            _context.SaveChanges();
         }
     }
 }
